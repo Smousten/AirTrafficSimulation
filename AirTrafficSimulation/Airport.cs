@@ -70,6 +70,36 @@ namespace AirTrafficSimulation
             this.airport.AddSpace("Taxiways", taxiWaySpace);
             this.airport.AddSpace("Hangers", hangerSpace);
             this.airport.AddSpace("Control Towers", controlTowerSpace);
+            
+        }
+        public SpaceRepository getSpaceRepository()
+        {
+            return airport;
+        }
+        public void printElements()
+        {
+            var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
+            var elementstaxiway = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
+            var elementslocks = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
+            var elementscontrol = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
+            foreach (var t in elementsrunway)
+            {
+                Console.WriteLine(t);
+            }
+            foreach (var t in elementslocks)
+            {
+                Console.WriteLine(t);
+            }
+            foreach (var t in elementstaxiway)
+            {
+                Console.WriteLine(t);
+            }
+            foreach (var t in elementscontrol)
+            {
+                Console.WriteLine(t);
+            }
         }
     }
+
+    
 }

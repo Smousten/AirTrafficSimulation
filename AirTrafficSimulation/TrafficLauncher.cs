@@ -15,6 +15,8 @@ namespace AirTrafficSimulation
         public static readonly int GRID_SIZE = 500;
         public static readonly int WIDTH = GRID_SIZE;
         public static readonly int HEIGHT = GRID_SIZE;
+        public static readonly int noOfRunways = 3;
+        public static readonly int noOfTaxiWays = 5;
 
         /// <summary>
         /// The main entry point for the application.
@@ -22,13 +24,23 @@ namespace AirTrafficSimulation
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new StartScreen());
-            SequentialSpace airport = new SequentialSpace();
-            Airport controlTower = new Airport(airport);
-            //(new System.Threading.Thread(new System.Threading.ThreadStart(() => controlTower.run()))).Start();
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new StartScreen());
+            Airport airport = new Airport(noOfRunways, noOfTaxiWays);
+            airport.printElements();
 
+            int counter = 0;
+            for(int i = 0; i < 5; i++)
+            {
+                //Airplane airplane = new Airplane(airport.getSpaceRepository(),""+i);
+                //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+
+            }
+            Console.Read();
+
+            //(new System.Threading.Thread(new System.Threading.ThreadStart(() => controlTower.run()))).Start();
+            
 
         }
     }
