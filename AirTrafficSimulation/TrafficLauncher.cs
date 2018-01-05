@@ -26,10 +26,8 @@ namespace AirTrafficSimulation
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new StartScreen());
             SequentialSpace airport = new SequentialSpace();
-            ControlTower controlTower = new ControlTower(airport);
+            Airport controlTower = new Airport(airport);
             //(new System.Threading.Thread(new System.Threading.ThreadStart(() => controlTower.run()))).Start();
-            airport.Put("Hanger", 10, 10, 0);
-            airport.Put("");
 
 
         }

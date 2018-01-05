@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Airplane.cs" />
+    <Compile Include="Airport.cs" />
     <Compile Include="ControlTower.cs" />
     <Compile Include="StartWindow.cs">
       <SubType>Form</SubType>
