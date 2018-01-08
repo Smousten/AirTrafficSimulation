@@ -102,10 +102,10 @@ namespace AirTrafficSimulation
 
         public void printElements()
         {
-            var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
-            var elementstaxiway = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
-            var elementslocks = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
-            var elementscontrol = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
+            var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(int));
+            var elementstaxiway = taxiWaySpace.QueryAll(typeof(string), typeof(int),typeof(int));
+            var elementslocks = runWayLockSpace.QueryAll(typeof(string));
+            var elementscontrol = controlTowerSpace.QueryAll(typeof(string), typeof(int), typeof(ControlTower));
             foreach (var t in elementsrunway)
             {
                 Console.WriteLine(t);

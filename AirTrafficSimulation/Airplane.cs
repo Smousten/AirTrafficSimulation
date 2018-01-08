@@ -41,7 +41,7 @@ namespace AirTrafficSimulation
             if (controlTowerSpace != null)
             {
                 ITuple controlTowerTuple = controlTowerSpace.Query("Control Tower Nr.", typeof(int), typeof(ControlTower));
-                Console.WriteLine(controlTowerTuple);
+                //Console.WriteLine(controlTowerTuple);
                 if (controlTowerTuple != null)
                 {
                     //Getting landing clearance
@@ -68,9 +68,10 @@ namespace AirTrafficSimulation
                                 runwayLockSpace.Put(freeRunwayLock);
                                 Console.WriteLine(credentials + " is putting free taxiway back with new barrier " + barrierLimit--);
                                 taxiwaySpace.Put((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit--);
+                                //System.Threading.Thread.Sleep(2500);
                                 break;
                             }
-                            System.Threading.Thread.Sleep(2500);
+                            
                         }
                         //Hanger step
                         Console.WriteLine(credentials + " is searching for same taxiway, to increase barrier...");
@@ -80,6 +81,7 @@ namespace AirTrafficSimulation
                         taxiwaySpace.Put((string)usedTaxiWay[0], usedTaxiWay[1], bL++);
                         Console.WriteLine(credentials + " has safely arrived in the hangar!");
                         // Thread kill
+                        return;
 
                     }
                 }
@@ -91,6 +93,61 @@ namespace AirTrafficSimulation
 
         public void takeoff()
         {
+            
+            //Establishing communication
+            Console.WriteLine(credentials + " is Searching for control tower...");
+            //ITuple controlTowerTupleInner = new dotSpace.Objects.Space.Tuple("Control Tower Nr.", typeof(int), typeof(ControlTower));
+            //ITuple controlTowerTuple = airport.QueryP("Control Towers", controlTowerTupleInner);
+            if (controlTowerSpace != null)
+            {
+                ITuple controlTowerTuple = controlTowerSpace.Query("Control Tower Nr.", typeof(int), typeof(ControlTower));
+                Console.WriteLine(controlTowerTuple);
+                if (controlTowerTuple != null)
+                {
+                    // Leaving hangar, entering taxiway
+                    while (true) //airport.Query(freeTaxiWayTuple[0],freeTaxiWayTuple[1],)
+                    {
+                        Console.WriteLine(credentials + " is searching for free taxiway...");
+                        ITuple freeTaxiWayTuple = taxiwaySpace.Query("Taxiway Nr.", controlTowerTuple[1], typeof(int));
+                        int barrierLimit = (int)freeTaxiWayTuple[2];
+                        if (barrierLimit > 0) //If taxiway isn't full
+                        {
+                            Console.WriteLine(credentials + " found free taxiway with barrier value " + barrierLimit + " and getting free taxiway tuple...");
+                            taxiwaySpace.Get((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit);
+                            //System.Threading.Thread.Sleep(2500);                      
+                            Console.WriteLine(credentials + " is putting free taxiway back with new barrier " + barrierLimit--);
+                            taxiwaySpace.Put((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit--);
+                            break;
+                        }
+
+                    }
+                    // Leaving taxiway, entering runway
+                    Console.WriteLine(credentials + " is searching for same taxiway, to increase barrier...");
+                    ITuple usedTaxiWay = taxiwaySpace.Get("Taxiway Nr.", controlTowerTuple[1], typeof(int));
+                    int bL = (int)usedTaxiWay[2];
+                    Console.WriteLine(credentials + " is increasing taxiway barrierLimit to " + bL++);
+                    taxiwaySpace.Put((string)usedTaxiWay[0], usedTaxiWay[1], bL++);
+                    Console.WriteLine(credentials + " has safely left the taxiway!");
+
+                    //Getting takeoff clearance
+                    ControlTower controlTower = (ControlTower)controlTowerTuple[2];
+                    Console.WriteLine(credentials + " found control tower and getting takeoff clearance...");
+                    string freeRunwayLock = controlTower.getLandingClearance();
+                    if (freeRunwayLock != null)
+                    {
+                        runwayLockSpace.Get(freeRunwayLock);
+                        Console.WriteLine(credentials + " got takeoff clearance with ID " + freeRunwayLock);
+                        //leave airport, enter in airspace
+                        //Thread.sleep(5000);
+                        //Airspace step
+                        return;
+
+                    }
+                    Console.WriteLine(credentials + " did not find a free runway, asking again...");
+                }
+
+                Console.WriteLine(credentials + " did not find a control tower, asking again...");
+            }
 
         }
     }

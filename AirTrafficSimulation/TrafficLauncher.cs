@@ -28,7 +28,7 @@ namespace AirTrafficSimulation
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new StartScreen());
             Airport airport = new Airport(noOfRunways, noOfTaxiWays);
-            airport.printElements();
+            //airport.printElements();
             //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
             int counter = 0;
             for(int i = 0; i < 5; i++)
