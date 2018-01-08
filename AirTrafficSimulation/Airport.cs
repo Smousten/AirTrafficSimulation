@@ -13,7 +13,7 @@ namespace AirTrafficSimulation
 {
     class Airport
     {
-        private SpaceRepository airport;
+        //private SpaceRepository airport;
         private SequentialSpace runWaySpace;
         private SequentialSpace runWayLockSpace;
         private SequentialSpace taxiWaySpace;
@@ -22,17 +22,18 @@ namespace AirTrafficSimulation
         private int noOfRunways;
         private int noOfTaxiways;
         private int noOfHangers;
-        private int noOfControlTowers;
+        private int noOfControlTowers = 1;
         private readonly int barrier = 3;
 
 
         public Airport(int noOfRunways, int noOfTaxiways)//, int noOfHangers, int noOfControlTowers) 
         {
             
-            this.airport = new SpaceRepository();
+            //this.airport = new SpaceRepository();
             this.runWaySpace = new SequentialSpace();
             this.runWayLockSpace = new SequentialSpace();
             this.taxiWaySpace = new SequentialSpace();
+            this.controlTowerSpace = new SequentialSpace();
             //this.hanger = new SequentialSpace();
             //this.controlTower = new SequentialSpace();
             this.noOfRunways = noOfRunways;
@@ -61,21 +62,44 @@ namespace AirTrafficSimulation
                 while (noOfControlTowers > 0)
                 {
                     ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace);
-                    this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
-                    noOfControlTowers--;
+                    if (controlTowerSpace != null) {
+                        this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
+                        noOfControlTowers--;
+                    }
+                    
                 }
             }
-            this.airport.AddSpace("Runways", runWaySpace);
-            this.airport.AddSpace("Runway Locks", runWayLockSpace);
-            this.airport.AddSpace("Taxiways", taxiWaySpace);
-            this.airport.AddSpace("Hangers", hangerSpace);
-            this.airport.AddSpace("Control Towers", controlTowerSpace);
+            //this.airport.AddSpace("Runways", runWaySpace);
+            //this.airport.AddSpace("Runway Locks", runWayLockSpace);
+            //this.airport.AddSpace("Taxiways", taxiWaySpace);
+            //this.airport.AddSpace("Hangers", hangerSpace);
+            //this.airport.AddSpace("Control Towers", controlTowerSpace);
             
         }
-        public SpaceRepository getSpaceRepository()
+        //public SpaceRepository getSpaceRepository()
+        //{
+        //   return airport;
+        //}
+        public SequentialSpace getSpace(string space)
         {
-            return airport;
+            switch(space)
+            {
+                case "runway":
+                    return runWaySpace;
+                case "runwaylock":
+                    return runWayLockSpace;
+                case "taxiway":
+                    return taxiWaySpace;
+                case "control tower":
+                    return controlTowerSpace;
+                case "hangar":
+                    return hangerSpace;
+
+            }
+            return null;
         }
+        
+
         public void printElements()
         {
             var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(SequentialSpace));
