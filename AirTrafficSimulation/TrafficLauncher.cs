@@ -35,6 +35,7 @@ namespace AirTrafficSimulation
             {
                 Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("runwaylock"),airport.getSpace("taxiway"),""+i);
                 (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+                //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
 
             }
             Console.Read();

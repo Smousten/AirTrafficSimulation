@@ -101,7 +101,7 @@ namespace AirTrafficSimulation
             if (controlTowerSpace != null)
             {
                 ITuple controlTowerTuple = controlTowerSpace.Query("Control Tower Nr.", typeof(int), typeof(ControlTower));
-                Console.WriteLine(controlTowerTuple);
+                //Console.WriteLine(controlTowerTuple);
                 if (controlTowerTuple != null)
                 {
                     // Leaving hangar, entering taxiway
@@ -136,7 +136,7 @@ namespace AirTrafficSimulation
                     if (freeRunwayLock != null)
                     {
                         runwayLockSpace.Get(freeRunwayLock);
-                        Console.WriteLine(credentials + " got takeoff clearance with ID " + freeRunwayLock);
+                        Console.WriteLine(credentials + " got takeoff clearance with ID " + freeRunwayLock + " and left the airport!");
                         //leave airport, enter in airspace
                         //Thread.sleep(5000);
                         //Airspace step
