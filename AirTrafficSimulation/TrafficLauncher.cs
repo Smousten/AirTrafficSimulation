@@ -31,12 +31,17 @@ namespace AirTrafficSimulation
             //airport.printElements();
             //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
             int counter = 0;
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 16; i++)
             {
-                Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("runwaylock"),airport.getSpace("taxiway"),""+i);
-                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-                //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("taxiway"),""+i);
+                if (i < 8)
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
 
+                } else
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                }
             }
             Console.Read();
 

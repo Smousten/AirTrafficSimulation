@@ -45,12 +45,12 @@ namespace AirTrafficSimulation
                 if (noOfRunways > 0)
                 {
                     this.runWaySpace.Put("Runway Nr.", noOfRunways);
-                    this.runWayLockSpace.Put("Runway Nr. " + noOfRunways + " -lock");
+                    //this.runWaySpace.Put("Runway Nr. " + noOfRunways + " -lock");
                     noOfRunways--;
                 }
                 if (noOfTaxiways > 0)
                 {
-                    this.taxiWaySpace.Put("Taxiway Nr.", noOfTaxiways,barrier);
+                    this.taxiWaySpace.Put("Taxiway Nr.", noOfTaxiways,barrier,barrier>0);
 
                     noOfTaxiways--;
                 }

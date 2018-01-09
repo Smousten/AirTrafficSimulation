@@ -28,16 +28,25 @@ namespace AirTrafficSimulation
             //this.repository.AddSpace("Hangars", hangars);
 
         }
-        public string getLandingClearance()
+        public ITuple getRunwayClearance()
         {
-            ITuple freeRunwaySpace = runwaySpace.QueryP("Runway Nr.", typeof(int));//("runWay", typeof(SequentialSpace)); //Finds the relevant category
+            ITuple freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));//("runWay", typeof(SequentialSpace)); //Finds the relevant category
             if (freeRunwaySpace != null)
             {
-                string freeRunwayLock = freeRunwaySpace[0] + " " + freeRunwaySpace[1] + " -lock";
-                return (freeRunwayLock);
+                //string freeRunwayLock = freeRunwaySpace[0] + " " + freeRunwaySpace[1] + " -lock";
+                //return (freeRunwayLock);
                 //freeRunwaySpace.QueryAll("Runway"); //Finds a free runway
+                return freeRunwaySpace;
             }
             return null;
+        }
+        public void putRunway(ITuple space)
+        {
+            if ((string)space[0] == "Runway Nr.")
+            {
+                Console.WriteLine("Unlocking Runway Nr. {0} / putting it back",space[1]);
+                runwaySpace.Put(space);
+            }
         }
     }
 }
