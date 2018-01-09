@@ -16,7 +16,7 @@ namespace AirTrafficSimulation
         //private SpaceRepository airport;
         private SequentialSpace runWaySpace;
         private SequentialSpace taxiWayLandingSpace;
-        private SequentialSpace taxiWayTakeoffSpace;
+        private SequentialSpace taxiWayTakeOffSpace;
         private SequentialSpace hangerSpace;
         private SequentialSpace controlTowerSpace;
         private int noOfRunways;
@@ -32,7 +32,7 @@ namespace AirTrafficSimulation
             //this.airport = new SpaceRepository();
             this.runWaySpace = new SequentialSpace();
             this.taxiWayLandingSpace = new SequentialSpace();
-            this.taxiWayTakeoffSpace = new SequentialSpace();
+            this.taxiWayTakeOffSpace = new SequentialSpace();
             this.controlTowerSpace = new SequentialSpace();
             //this.hanger = new SequentialSpace();
             //this.controlTower = new SequentialSpace();
@@ -52,7 +52,7 @@ namespace AirTrafficSimulation
                 if (noOfTaxiways > 0)
                 {
                     this.taxiWayLandingSpace.Put("Taxiway L", noOfTaxiways, barrier, barrier > 0);
-                    this.taxiWayTakeoffSpace.Put("Taxiway T", noOfTaxiways, barrier, barrier > 0);
+                    this.taxiWayTakeOffSpace.Put("Taxiway R", noOfTaxiways, barrier, barrier > 0);
                     noOfTaxiways--;
                 }
                 /*if (noOfHangers > 0)
@@ -62,7 +62,7 @@ namespace AirTrafficSimulation
                 }*/
                 while (noOfControlTowers > 0)
                 {
-                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWayTakeoffSpace, hangerSpace);
+                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWayTakeOffSpace, hangerSpace);
                     if (controlTowerSpace != null) {
                         this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
                         noOfControlTowers--;
@@ -90,7 +90,7 @@ namespace AirTrafficSimulation
                 case "taxiway-in":
                     return taxiWayLandingSpace;
                 case "taxiway-out":
-                    return taxiWayTakeoffSpace;
+                    return taxiWayTakeOffSpace;
                 case "control tower":
                     return controlTowerSpace;
                 case "hangar":
@@ -104,8 +104,8 @@ namespace AirTrafficSimulation
         public void printElements()
         {
             var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(int));
-            var elementstaxiway = taxiWayTakeoffSpace.QueryAll(typeof(string), typeof(int),typeof(int));
-            var elementslocks = taxiWayLandingSpace.QueryAll(typeof(string));
+            var elementstaxiway = taxiWayTakeOffSpace.QueryAll(typeof(string), typeof(int),typeof(int));
+            var elementslocks = taxiWayLandingSpace.QueryAll(typeof(string),typeof(int),typeof(int));
             var elementscontrol = controlTowerSpace.QueryAll(typeof(string), typeof(int), typeof(ControlTower));
             foreach (var t in elementsrunway)
             {
