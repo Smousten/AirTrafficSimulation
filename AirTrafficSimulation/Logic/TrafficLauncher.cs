@@ -15,7 +15,7 @@ namespace AirTrafficSimulation
         public static readonly int noOfRunways = 3;
         public static readonly int noOfTaxiWays = 5;
         public static readonly int taxiWayCapacity = 3;
-        public static readonly int noOfPlanes = 16;
+        public static readonly int noOfPlanes = 300;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
