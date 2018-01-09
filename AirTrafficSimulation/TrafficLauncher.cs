@@ -12,9 +12,6 @@ namespace AirTrafficSimulation
 {
     static class TrafficLauncher
     {
-        public static readonly int GRID_SIZE = 500;
-        public static readonly int WIDTH = GRID_SIZE;
-        public static readonly int HEIGHT = GRID_SIZE;
         public static readonly int noOfRunways = 3;
         public static readonly int noOfTaxiWays = 5;
         public static readonly int taxiWayCapacity = 3;
@@ -45,8 +42,6 @@ namespace AirTrafficSimulation
                 }
             }
             Console.Read();
-
-            //(new System.Threading.Thread(new System.Threading.ThreadStart(() => controlTower.run()))).Start();
         }
     }
 }
