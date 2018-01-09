@@ -15,29 +15,30 @@ namespace AirTrafficSimulation
     {
         //private SpaceRepository airport;
         private SequentialSpace runWaySpace;
-        private SequentialSpace runWayLockSpace;
-        private SequentialSpace taxiWaySpace;
+        private SequentialSpace taxiWayLandingSpace;
+        private SequentialSpace taxiWayTakeOffSpace;
         private SequentialSpace hangerSpace;
         private SequentialSpace controlTowerSpace;
         private int noOfRunways;
         private int noOfTaxiways;
         private int noOfHangers;
         private int noOfControlTowers = 1;
-        private readonly int barrier = 3;
+        private int barrier = 3;
 
 
-        public Airport(int noOfRunways, int noOfTaxiways)//, int noOfHangers, int noOfControlTowers) 
+        public Airport(int noOfRunways, int noOfTaxiways, int barrier)//, int noOfHangers, int noOfControlTowers) 
         {
             
             //this.airport = new SpaceRepository();
             this.runWaySpace = new SequentialSpace();
-            this.runWayLockSpace = new SequentialSpace();
-            this.taxiWaySpace = new SequentialSpace();
+            this.taxiWayLandingSpace = new SequentialSpace();
+            this.taxiWayTakeOffSpace = new SequentialSpace();
             this.controlTowerSpace = new SequentialSpace();
             //this.hanger = new SequentialSpace();
             //this.controlTower = new SequentialSpace();
             this.noOfRunways = noOfRunways;
             this.noOfTaxiways = noOfTaxiways;
+            this.barrier = barrier;
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
@@ -50,8 +51,8 @@ namespace AirTrafficSimulation
                 }
                 if (noOfTaxiways > 0)
                 {
-                    this.taxiWaySpace.Put("Taxiway Nr.", noOfTaxiways,barrier,barrier>0);
-
+                    this.taxiWayLandingSpace.Put("Taxiway L", noOfTaxiways, barrier, barrier > 0);
+                    this.taxiWayTakeOffSpace.Put("Taxiway R", noOfTaxiways, barrier, barrier > 0);
                     noOfTaxiways--;
                 }
                 /*if (noOfHangers > 0)
@@ -61,7 +62,7 @@ namespace AirTrafficSimulation
                 }*/
                 while (noOfControlTowers > 0)
                 {
-                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace);
+                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWayTakeOffSpace, hangerSpace);
                     if (controlTowerSpace != null) {
                         this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
                         noOfControlTowers--;
@@ -86,10 +87,10 @@ namespace AirTrafficSimulation
             {
                 case "runway":
                     return runWaySpace;
-                case "runwaylock":
-                    return runWayLockSpace;
-                case "taxiway":
-                    return taxiWaySpace;
+                case "taxiway-in":
+                    return taxiWayLandingSpace;
+                case "taxiway-out":
+                    return taxiWayTakeOffSpace;
                 case "control tower":
                     return controlTowerSpace;
                 case "hangar":
@@ -103,8 +104,8 @@ namespace AirTrafficSimulation
         public void printElements()
         {
             var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(int));
-            var elementstaxiway = taxiWaySpace.QueryAll(typeof(string), typeof(int),typeof(int));
-            var elementslocks = runWayLockSpace.QueryAll(typeof(string));
+            var elementstaxiway = taxiWayTakeOffSpace.QueryAll(typeof(string), typeof(int),typeof(int));
+            var elementslocks = taxiWayLandingSpace.QueryAll(typeof(string),typeof(int),typeof(int));
             var elementscontrol = controlTowerSpace.QueryAll(typeof(string), typeof(int), typeof(ControlTower));
             foreach (var t in elementsrunway)
             {
@@ -124,6 +125,4 @@ namespace AirTrafficSimulation
             }
         }
     }
-
-    
 }
