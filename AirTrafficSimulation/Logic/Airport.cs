@@ -52,7 +52,7 @@ namespace AirTrafficSimulation
                 if (noOfTaxiways > 0)
                 {
                     this.taxiWayLandingSpace.Put("Taxiway L", noOfTaxiways, barrier, barrier > 0);
-                    this.taxiWayTakeOffSpace.Put("Taxiway R", noOfTaxiways, barrier, barrier > 0);
+                    this.taxiWayTakeOffSpace.Put("Taxiway T", noOfTaxiways, barrier, barrier > 0);
                     noOfTaxiways--;
                 }
                 /*if (noOfHangers > 0)
