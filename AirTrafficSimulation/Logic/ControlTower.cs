@@ -16,12 +16,14 @@ namespace AirTrafficSimulation
         private SequentialSpace runwaySpace;
         private SequentialSpace taxiwaySpace;
         private SequentialSpace hangarSpace;
+        private SequentialSpace airplaneSpace;
 
-        public ControlTower(SequentialSpace runways, SequentialSpace taxiways, SequentialSpace hangars) 
+        public ControlTower(SequentialSpace runways, SequentialSpace taxiways, SequentialSpace hangars, SequentialSpace airplanes) 
         {
             this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
             this.hangarSpace = hangars;
+            this.airplaneSpace = airplanes;
 
             //this.repository.AddSpace("Runways", runways);
             //this.repository.AddSpace("Taxiways", taxiways);

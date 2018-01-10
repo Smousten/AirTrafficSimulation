@@ -12,10 +12,10 @@ namespace AirTrafficSimulation
 {
     static class TrafficLauncher
     {
-        public static readonly int noOfRunways = 3;
-        public static readonly int noOfTaxiWays = 5;
-        public static readonly int taxiWayCapacity = 3;
-        public static readonly int noOfPlanes = 300;
+        private static readonly int noOfRunways = 2;
+        private static readonly int noOfTaxiWays = 4;
+        private static readonly int taxiWayCapacity = 3;
+        //private static readonly int noOfPlanes = 30;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -28,18 +28,18 @@ namespace AirTrafficSimulation
             Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity);
             //airport.printElements();
             //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
-            for(int i = 0; i < noOfPlanes; i++)
-            {
-                Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("taxiway-out"),airport.getSpace("taxiway-in"),""+i);
-                if (i < noOfPlanes/2)
-                {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+            //for (int i = 0; i < noOfPlanes; i++)
+            //{
+            //    Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("taxiway"),""+i);
+            //    if (i < noOfPlanes/2)
+            //    {
+            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
 
-                } else
-                {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
-                }
-            }
+            //    } else
+            //    {
+            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+            //    }
+            //}
             Console.Read();
         }
     }

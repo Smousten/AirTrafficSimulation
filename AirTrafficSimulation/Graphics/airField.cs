@@ -218,6 +218,25 @@ namespace AirTrafficSimulation
             e.Graphics.DrawImage(plane , x, y, size, size);
         }
 
-        
+        public bool isOnRunway(int x, int y)
+        {
+            return (((x > (halfformWidth - halfformWidth / 5) && (x < ((halfformWidth - halfformWidth / 5) + runWayWidth)) &&
+            (y > 30 && y < (30 + runWayLength2)))) || ((x > 30 && x < 30 + runWayLength) &&
+                (y > (halfformHeight - (halfformHeight / 5)) && y < (halfformHeight - (halfformHeight / 5)) + runWayWidth)));       
+        }
+
+        public bool isInHangar(int x, int y)
+        {
+            return ((x > (30 + runWayLength - (2 * taxiWidth) + taxiWidth / 2) && x < (30 + runWayLength - (2 * taxiWidth) + taxiWidth / 2) + taxiWidth * 2)
+                && (y > this.Height - 30 - taxiWidth - taxiWidth / 2 && y < (this.Height - 30 - taxiWidth - taxiWidth / 2) + taxiWidth * 2));
+        }
+
+        public bool isOnTaxiWay(int x, int y)
+        {
+            return (x > 30 && x < 30+runWayLength && y > (this.Height - 30 - taxiWidth)+30 && y < (this.Height - 30 - taxiWidth)+taxiWidth) 
+                || (x > 30 && x < 30+runWayLength && y > (this.Height - runWayLength2 - 30) && y < (this.Height - runWayLength2 - 30)+taxiWidth)
+                || (x > runWayLength - taxiWidth + 30 && x < (runWayLength - taxiWidth + 30)+taxiWidth && y > 30 && y < 30+runWayLength2)
+                || (x > 30 && x < 30+taxiWidth && y > 30 && y < 30+runWayLength2);
+        }
     }
 }

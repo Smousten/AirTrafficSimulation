@@ -15,15 +15,16 @@ namespace AirTrafficSimulation
     {
         //private SpaceRepository airport;
         private SequentialSpace runWaySpace;
-        private SequentialSpace taxiWayLandingSpace;
-        private SequentialSpace taxiWayTakeOffSpace;
+        private SequentialSpace taxiWaySpace;
         private SequentialSpace hangerSpace;
         private SequentialSpace controlTowerSpace;
+        private SequentialSpace airplaneSpace;
         private int noOfRunways;
         private int noOfTaxiways;
         private int noOfHangers;
         private int noOfControlTowers = 1;
         private int barrier = 3;
+        private static readonly int noOfPlanes = 30;
 
 
         public Airport(int noOfRunways, int noOfTaxiways, int barrier)//, int noOfHangers, int noOfControlTowers) 
@@ -31,9 +32,9 @@ namespace AirTrafficSimulation
             
             //this.airport = new SpaceRepository();
             this.runWaySpace = new SequentialSpace();
-            this.taxiWayLandingSpace = new SequentialSpace();
-            this.taxiWayTakeOffSpace = new SequentialSpace();
+            this.taxiWaySpace = new SequentialSpace();
             this.controlTowerSpace = new SequentialSpace();
+            this.airplaneSpace = new SequentialSpace();
             //this.hanger = new SequentialSpace();
             //this.controlTower = new SequentialSpace();
             this.noOfRunways = noOfRunways;
@@ -51,8 +52,8 @@ namespace AirTrafficSimulation
                 }
                 if (noOfTaxiways > 0)
                 {
-                    this.taxiWayLandingSpace.Put("Taxiway L", noOfTaxiways, barrier, barrier > 0);
-                    this.taxiWayTakeOffSpace.Put("Taxiway T", noOfTaxiways, barrier, barrier > 0);
+                    this.taxiWaySpace.Put("Taxiway L", noOfTaxiways, barrier, barrier > 0);
+                    this.taxiWaySpace.Put("Taxiway T", noOfTaxiways, barrier, barrier > 0);
                     noOfTaxiways--;
                 }
                 /*if (noOfHangers > 0)
@@ -62,7 +63,7 @@ namespace AirTrafficSimulation
                 }*/
                 while (noOfControlTowers > 0)
                 {
-                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWayTakeOffSpace, hangerSpace);
+                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace,airplaneSpace);
                     if (controlTowerSpace != null) {
                         this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
                         noOfControlTowers--;
@@ -70,6 +71,7 @@ namespace AirTrafficSimulation
                     
                 }
             }
+            spawnAirplanes();
             //this.airport.AddSpace("Runways", runWaySpace);
             //this.airport.AddSpace("Runway Locks", runWayLockSpace);
             //this.airport.AddSpace("Taxiways", taxiWaySpace);
@@ -87,26 +89,49 @@ namespace AirTrafficSimulation
             {
                 case "runway":
                     return runWaySpace;
-                case "taxiway-in":
-                    return taxiWayLandingSpace;
-                case "taxiway-out":
-                    return taxiWayTakeOffSpace;
+                case "taxiway":
+                    return taxiWaySpace;
                 case "control tower":
                     return controlTowerSpace;
                 case "hangar":
                     return hangerSpace;
+                case "airplane":
+                    return airplaneSpace;
 
             }
             return null;
+        }
+
+        public void spawnAirplanes()
+        {
+            int counter = 0;
+            while (counter<10)
+            {
+                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter);
+                airplaneSpace.Put(counter, 0, 0);
+                if (counter < noOfPlanes / 2)
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+
+                }
+                else
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                }
+                System.Threading.Thread.Sleep(2500);
+                counter++;
+            }
+
         }
         
 
         public void printElements()
         {
             var elementsrunway = runWaySpace.QueryAll(typeof(string), typeof(int));
-            var elementstaxiway = taxiWayTakeOffSpace.QueryAll(typeof(string), typeof(int),typeof(int));
-            var elementslocks = taxiWayLandingSpace.QueryAll(typeof(string),typeof(int),typeof(int));
+            var elementstaxiway = taxiWaySpace.QueryAll(typeof(string), typeof(int),typeof(int));
+            var elementslocks = taxiWaySpace.QueryAll(typeof(string),typeof(int),typeof(int));
             var elementscontrol = controlTowerSpace.QueryAll(typeof(string), typeof(int), typeof(ControlTower));
+            var elementsairplane = airplaneSpace.QueryAll(typeof(ITuple));
             foreach (var t in elementsrunway)
             {
                 Console.WriteLine(t);
@@ -120,6 +145,10 @@ namespace AirTrafficSimulation
                 Console.WriteLine(t);
             }
             foreach (var t in elementscontrol)
+            {
+                Console.WriteLine(t);
+            }
+            foreach (var t in elementsairplane)
             {
                 Console.WriteLine(t);
             }
