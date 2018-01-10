@@ -10,17 +10,22 @@ namespace AirTrafficSimulation.Controller
 {
     class Translator
     {
-        private SequentialSpace controlTowerSpace;
-        private SequentialSpace airplaneSpace;
         private SequentialSpace runwaySpace;
         private SequentialSpace taxiwaySpace;
-        
-        public Translator(SequentialSpace ctspace, SequentialSpace apspace, SequentialSpace rwspace, SequentialSpace twspace)
+        public Translator(SequentialSpace runways, SequentialSpace taxiways)
         {
-            this.controlTowerSpace = ctspace;
-            this.airplaneSpace = apspace;
-            this.runwaySpace = rwspace;
-            this.taxiwaySpace = twspace;
+            this.runwaySpace = runways;
+            this.taxiwaySpace = taxiways;
+        }
+        //Fire-and-forget method, to update the GUI
+        public void updateGraphicalPosition(string credentials, string previousLocation, string nextLocation)
+        {
+            //Tell graphics the input information, so we can draw it
+        }
+        //Fire-and-forget method, to allow the logic to progress
+        public void updateLogicalPosition()
+        {
+
         }
     }
 }

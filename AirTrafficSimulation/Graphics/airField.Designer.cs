@@ -1,6 +1,6 @@
 ﻿namespace AirTrafficSimulation
 {
-    partial class airField
+    partial class AirField
     {
         /// <summary>
         /// Required designer variable.

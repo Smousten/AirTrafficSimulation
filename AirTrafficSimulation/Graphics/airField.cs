@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace AirTrafficSimulation
 {
-    public partial class airField : Form
+    public partial class AirField : Form
     {
         private PictureBox picbox;
 
@@ -48,7 +48,7 @@ namespace AirTrafficSimulation
         }
 
 
-        public airField()
+        public AirField()
         {
             InitializeComponent();
             

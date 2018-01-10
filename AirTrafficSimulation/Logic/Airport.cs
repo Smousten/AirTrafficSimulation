@@ -24,7 +24,7 @@ namespace AirTrafficSimulation
         private int noOfHangers;
         private int noOfControlTowers = 1;
         private int barrier = 3;
-        private static readonly int noOfPlanes = 300;
+        private static readonly int noOfPlanes = 10;
 
 
         public Airport(int noOfRunways, int noOfTaxiways, int barrier)//, int noOfHangers, int noOfControlTowers) 

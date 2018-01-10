@@ -22,10 +22,13 @@ namespace AirTrafficSimulation
         [STAThread]
         static void Main()
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new airField());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            AirField airfield = new AirField();
+            Application.Run(airfield);
             Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity);
+            Controller.Translator translator = new Controller.Translator(airport,airfield);
+
             //airport.printElements();
             //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
             //for (int i = 0; i < noOfPlanes; i++)
