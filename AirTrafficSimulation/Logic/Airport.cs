@@ -24,7 +24,7 @@ namespace AirTrafficSimulation
         private int noOfHangers;
         private int noOfControlTowers = 1;
         private int barrier = 3;
-        private static readonly int noOfPlanes = 30;
+        private static readonly int noOfPlanes = 300;
 
 
         public Airport(int noOfRunways, int noOfTaxiways, int barrier)//, int noOfHangers, int noOfControlTowers) 
@@ -105,18 +105,19 @@ namespace AirTrafficSimulation
         public void spawnAirplanes()
         {
             int counter = 0;
-            while (counter<10)
+            while (counter<noOfPlanes)
             {
                 Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter);
-                airplaneSpace.Put(counter, 0, 0);
+                
                 if (counter < noOfPlanes / 2)
                 {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-
+                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Airspace")))).Start();
                 }
                 else
                 {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Hangar")))).Start();
                 }
                 System.Threading.Thread.Sleep(1);
                 counter++;

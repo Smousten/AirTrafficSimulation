@@ -32,6 +32,25 @@ namespace AirTrafficSimulation
             this.credentials = credentials;
 
         }
+        public void flyEternally(string startingLocation)
+        {
+            while(true)
+            {
+                if (startingLocation == "Airspace")
+                {
+                    landing();
+                    takeoff();
+                } else if (startingLocation == "Hanger")
+                {
+                    takeoff();
+                    landing();
+                } else
+                {
+                    Console.WriteLine("You are drunk, go home.");
+                    break;
+                }
+            }
+        }
         public void landing()
         {
             //Establishing communication
@@ -133,7 +152,6 @@ namespace AirTrafficSimulation
                         //runwaySpace.Put(freeRunwayLock);
                         controlTower.putRunway(freeRunwayLock);
                         //Airspace step
-                        return;
 
                     }
                 }

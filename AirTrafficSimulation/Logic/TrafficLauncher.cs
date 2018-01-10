@@ -40,7 +40,7 @@ namespace AirTrafficSimulation
             //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
             //    }
             //}
-            Console.Read();
+            //Console.Read();
         }
     }
 }
