@@ -118,7 +118,7 @@ namespace AirTrafficSimulation
                 {
                     (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
                 }
-                System.Threading.Thread.Sleep(2500);
+                System.Threading.Thread.Sleep(1);
                 counter++;
             }
 
