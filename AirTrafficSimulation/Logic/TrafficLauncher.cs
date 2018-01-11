@@ -15,35 +15,21 @@ namespace AirTrafficSimulation
         private static readonly int noOfRunways = 2;
         private static readonly int noOfTaxiWays = 4;
         private static readonly int taxiWayCapacity = 3;
-        //private static readonly int noOfPlanes = 30;
+        private static readonly int noOfPlanes = 30;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            AirField airfield = new AirField();
-            Application.Run(airfield);
-            Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity);
-            Controller.Translator translator = new Controller.Translator(airport,airfield);
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            AirField airField = new AirField();
+            //Application.Run(airField);
+            Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity, noOfPlanes, airField);
 
             //airport.printElements();
-            //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
-            //for (int i = 0; i < noOfPlanes; i++)
-            //{
-            //    Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("taxiway"),""+i);
-            //    if (i < noOfPlanes/2)
-            //    {
-            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-
-            //    } else
-            //    {
-            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
-            //    }
-            //}
-            //Console.Read();
+            //Console.ReadLine();
         }
     }
 }

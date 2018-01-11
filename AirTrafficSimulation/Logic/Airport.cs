@@ -23,13 +23,12 @@ namespace AirTrafficSimulation
         private int noOfTaxiways;
         private int noOfHangers;
         private int noOfControlTowers = 1;
-        private int barrier = 3;
-        private static readonly int noOfPlanes = 10;
+        private int barrier;
+        private int noOfPlanes;
 
 
-        public Airport(int noOfRunways, int noOfTaxiways, int barrier)//, int noOfHangers, int noOfControlTowers) 
+        public Airport(int noOfRunways, int noOfTaxiways, int barrier, int noOfPlanes, AirField airField) //, int noOfHangers, int noOfControlTowers) 
         {
-            
             //this.airport = new SpaceRepository();
             this.runWaySpace = new SequentialSpace();
             this.taxiWaySpace = new SequentialSpace();
@@ -40,6 +39,7 @@ namespace AirTrafficSimulation
             this.noOfRunways = noOfRunways;
             this.noOfTaxiways = noOfTaxiways;
             this.barrier = barrier;
+            this.noOfPlanes = noOfPlanes;
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
@@ -63,7 +63,7 @@ namespace AirTrafficSimulation
                 }*/
                 while (noOfControlTowers > 0)
                 {
-                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace,airplaneSpace);
+                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace, airplaneSpace, airField);
                     if (controlTowerSpace != null) {
                         this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
                         noOfControlTowers--;

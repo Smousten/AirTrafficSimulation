@@ -12,20 +12,34 @@ namespace AirTrafficSimulation.Controller
     {
         private SequentialSpace runwaySpace;
         private SequentialSpace taxiwaySpace;
-        public Translator(SequentialSpace runways, SequentialSpace taxiways)
+        private AirField airField;
+
+        public Translator(SequentialSpace runways, SequentialSpace taxiways, AirField airField)
         {
             this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
+            this.airField = airField;
         }
-        //Fire-and-forget method, to update the GUI
-        public void updateGraphicalPosition(string credentials, string previousLocation, string nextLocation)
+        //Fire-and-forget method, for the logic to update the GUI
+        public void updateGraphicalPosition(string planeCredentials, string previousLocationCredentials, string nextLocationCredentials)
         {
-            //Tell graphics the input information, so we can draw it
+            // Tell graphics the input information, so we can draw it
+            dotSpace.Objects.Space.Tuple relevantDataTuple = new dotSpace.Objects.Space.Tuple(planeCredentials, previousLocationCredentials, nextLocationCredentials);
+            //airField.UpdatePlanePosition(planeCredentials, previousLocation, nextLocation);
+            
         }
-        //Fire-and-forget method, to allow the logic to progress
-        public void updateLogicalPosition()
+        
+        //Fire-and-forget method, for the GUI to allow the logic to progress
+        public void updateLogicalPosition(string planeCredentials, string newLocationCredentials)
         {
-
+            string planeNextLocationLock = planeCredentials + newLocationCredentials + "-lock";
+            if (newLocationCredentials == "Runway")
+            {
+                runwaySpace.Put(planeNextLocationLock);
+            } else if (newLocationCredentials == "Taxiway")
+            {
+                taxiwaySpace.Put(planeNextLocationLock);
+            }
         }
     }
 }
