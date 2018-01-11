@@ -29,12 +29,10 @@ namespace AirTrafficSimulation
             //this.airport = airportRepository;
             this.controlTowerSpace = CTSpace;
             this.runwaySpace = rwSpace;
-            //this.runwayLockSpace = rwlSpace;
             this.taxiwaySpace = twSpace;
             this.credentials = credentials;
             this.runwayGUILock = credentials + "Runway" + "-lock";
             this.taxiwayGUILock = credentials + "Taxiway" + "-lock";
-
         }
         public void flyEternally(string startingLocation)
         {
