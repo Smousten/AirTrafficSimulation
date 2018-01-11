@@ -30,19 +30,6 @@ namespace AirTrafficSimulation
             Controller.Translator translator = new Controller.Translator(airport.getSpace("runway"),airport.getSpace("taxiway"));
 
             //airport.printElements();
-            //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
-            //for (int i = 0; i < noOfPlanes; i++)
-            //{
-            //    Airplane airplane = new Airplane(airport.getSpace("control tower"),airport.getSpace("runway"),airport.getSpace("taxiway"),""+i);
-            //    if (i < noOfPlanes/2)
-            //    {
-            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-
-            //    } else
-            //    {
-            //        (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
-            //    }
-            //}
             //Console.Read();
         }
     }
