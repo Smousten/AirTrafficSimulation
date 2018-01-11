@@ -18,16 +18,12 @@ namespace AirTrafficSimulation
         private SequentialSpace hangarSpace;
         private SequentialSpace airplaneSpace;
 
-        private Controller.Translator translator;
-
-        public ControlTower(SequentialSpace runways, SequentialSpace taxiways, SequentialSpace hangars, SequentialSpace airplanes, AirField airField) 
+        public ControlTower(SequentialSpace runwaySpace, SequentialSpace taxiwaySpace, SequentialSpace hangarSpace, SequentialSpace airplaneSpace) 
         {
-            this.runwaySpace = runways;
-            this.taxiwaySpace = taxiways;
-            this.hangarSpace = hangars;
-            this.airplaneSpace = airplanes;
-
-            this.translator = new Controller.Translator(runways, taxiways, airField);
+            this.runwaySpace = runwaySpace;
+            this.taxiwaySpace = taxiwaySpace;
+            this.hangarSpace = hangarSpace;
+            this.airplaneSpace = airplaneSpace;
 
             //this.repository.AddSpace("Runways", runways);
             //this.repository.AddSpace("Taxiways", taxiways);
@@ -35,18 +31,28 @@ namespace AirTrafficSimulation
 
         }
 
-        public ITuple getRunwayClearance(string planeCredentials, string currentLocationIdentifier)
+        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName)
         {
-            Console.WriteLine(planeCredentials + " is getting runWay clearance...");
-            ITuple freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
-            translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, "" + freeRunwaySpace[0] + freeRunwaySpace[1]);
-            Console.WriteLine(planeCredentials + " has gotten runWay clearance!");
+            return getRunwayClearance(planeCredentials, currentLocationName, 0);
+        }
+
+        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName, int currentLocationCredential)
+        {
+            ITuple freeRunwaySpace;
+            Console.WriteLine(planeCredentials + " found a Control Tower and is getting clearance for accessing the runway...");
+            if (currentLocationName == "Taxiway T" || currentLocationName == "Taxiway T")
+            {
+                freeRunwaySpace = runwaySpace.Get("Runway Nr.",currentLocationCredential);
+            } else
+            {
+                freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
+            }
+            Console.WriteLine(planeCredentials + " has been granted clearance to access " + freeRunwaySpace[0] + freeRunwaySpace[1]);
             return freeRunwaySpace;
         }
 
-        public ITuple getTaxiwayClearance(string planeCredentials, string currentLocationIdentifier, bool takeOff)
+        /*public ITuple getTaxiwayClearance(string planeCredentials, string currentLocationIdentifier, bool takeOff)
         {
-            Console.WriteLine(planeCredentials+" is getting taxiWay clearance...");
             ITuple freeTaxiwaySpace;
             if (takeOff)
             {
@@ -55,10 +61,8 @@ namespace AirTrafficSimulation
             {
                 freeTaxiwaySpace = taxiwaySpace.Get("Taxiway L", typeof(int));
             }
-            translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, "" + freeTaxiwaySpace[0] + freeTaxiwaySpace[1]);
-            Console.WriteLine(planeCredentials + " has gotten runWay clearance!");
             return freeTaxiwaySpace;
-        }
+        }*/
 
         public void putRunway(ITuple space)
         {
@@ -69,23 +73,13 @@ namespace AirTrafficSimulation
             }
         }
 
-        public void putTaxiway(ITuple space)
+        /*public void putTaxiway(ITuple space)
         {
             if ((string)space[0] == "Taxiway T" || (string)space[0] == "Taxiway L")
             {
                 Console.WriteLine("Unlocking Taxiway Nr. {0} / putting it back", space[1]);
                 taxiwaySpace.Put(space);
             }
-        }
-
-        public void enterHangar(string planeCredentials, string currentLocationIdentifier)
-        {
-            translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, "Hangar");
-        }
-
-        public void enterAirspace(string planeCredentials, string currentLocationIdentifier)
-        {
-            translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, "Airspace");
-        }
+        }*/
     }
 }

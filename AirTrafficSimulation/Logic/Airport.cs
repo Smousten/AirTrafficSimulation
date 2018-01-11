@@ -63,7 +63,7 @@ namespace AirTrafficSimulation
                 }*/
                 while (noOfControlTowers > 0)
                 {
-                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace, airplaneSpace, airField);
+                    ControlTower controlTower = new ControlTower(runWaySpace, taxiWaySpace, hangerSpace, airplaneSpace);
                     if (controlTowerSpace != null) {
                         this.controlTowerSpace.Put("Control Tower Nr.", noOfControlTowers, controlTower);
                         noOfControlTowers--;
@@ -71,7 +71,7 @@ namespace AirTrafficSimulation
                     
                 }
             }
-            spawnAirplanes();
+            spawnAirplanes(airField);
             //this.airport.AddSpace("Runways", runWaySpace);
             //this.airport.AddSpace("Runway Locks", runWayLockSpace);
             //this.airport.AddSpace("Taxiways", taxiWaySpace);
@@ -102,12 +102,12 @@ namespace AirTrafficSimulation
             return null;
         }
 
-        public void spawnAirplanes()
+        public void spawnAirplanes(AirField airField)
         {
             int counter = 0;
             while (counter<noOfPlanes)
             {
-                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter);
+                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField);
                 
                 if (counter < noOfPlanes / 2)
                 {

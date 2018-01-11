@@ -29,7 +29,7 @@ namespace AirTrafficSimulation.Controller
             
         }
         
-        //Fire-and-forget method, for the GUI to allow the logic to progress
+        //Fire-and-forget method, for the GUI to allow the logic to progress onto a taxiway, or a runway
         public void updateLogicalPosition(string planeCredentials, string newLocationCredentials)
         {
             string planeNextLocationLock = planeCredentials + newLocationCredentials + "-lock";
