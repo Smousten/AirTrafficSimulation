@@ -40,7 +40,7 @@ namespace AirTrafficSimulation
                 {
                     landing();
                     takeoff();
-                } else if (startingLocation == "Hanger")
+                } else if (startingLocation == "Hangar")
                 {
                     takeoff();
                     landing();
