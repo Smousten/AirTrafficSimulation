@@ -24,121 +24,99 @@ namespace AirTrafficSimulation
         private int taxiWidth, taxiLength;
         private int runWayLength, runWayWidth, zebraWidth, zebraLength, linespace, runWayLength2;
 
+        private int taxiPosXL, taxiPosXR, taxiPosYU, taxiPosYL;
+
+        private int startX, startY;
+
+        private int[] plainPos = new int[] { 0, 0 };
+
+
+        private int speed, taxiSpeed, takeoffSpeed;
+        private bool takingOff, taxiing, takingOffOnRW;
+        private int rw;
+
 
         Bitmap plane = new Bitmap("airplane.png");
-        
+
 
         enum Position
         {
             Left, Right, Up, Down
         }
 
-        private void airfield_Load(object sender, System.EventArgs e)
-        {
-            // Dock the PictureBox to the form and set its background to white.
-            FormBorderStyle = FormBorderStyle.None;
-            WindowState = FormWindowState.Maximized;
-            picbox.Dock = DockStyle.Fill;
-            picbox.BackColor = Color.White;
-            // Connect the Paint event of the PictureBox to the event handler method.
-            picbox.Paint += new System.Windows.Forms.PaintEventHandler(this.airField_Paint);
-
-            // Add the PictureBox control to the Form.
-            this.Controls.Add(picbox);
-        }
-
-
         public AirField()
         {
             InitializeComponent();
-            
+            startX = 30 + (taxiWidth / 2);
+            startY = startX;
+            taxiSpeed = 10;
+            takeoffSpeed = 15;
+            takingOff = false;
+            taxiing = true;
+            takingOffOnRW = false;
+            rw = 90;
+            speed = taxiSpeed;
+
+
+            plainPos[0] = plainPos[1] = startX;
 
             x = 50;
             y = 50;
-            objPos = Position.Down;
-            
+            objPos = Position.Right;
+
             plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        }
-
-        private void runway_Paint(object sender, PaintEventArgs e)
-        {
-            
-
         }
 
         private void airField_Paint(object sender, PaintEventArgs e)
         {
-            //e.Graphics.FillEllipse(Brushes.DarkBlue, x, y, 100, 50);
-            //e.Graphics.DrawImage(new Bitmap("airplane.png"), x, y, 32, 32);
 
-            
+
+
             halfformHeight = (this.Height / 2);
             halfformWidth = (this.Width / 2);
-            runWayLength = (this.Width * 79)/100;
+            runWayLength = (this.Width * 79) / 100;
             runWayWidth = (this.Height * 17) / 100;
             runWayLength2 = (this.Height - 60); //(this.Height * 94)/100;
             zebraWidth = runWayWidth / 12;
             zebraLength = runWayLength / 10;
-            linespace = (runWayWidth - runWayWidth/12) / 7 ;
-            
-            size = (runWayWidth/10) * 5;
+            linespace = (runWayWidth - runWayWidth / 12) / 7;
+
+
 
             taxiLength = runWayLength / 2;
             taxiWidth = runWayWidth / 2;
+
+            taxiPosXL = taxiPosYU = startX;
+            taxiPosXR = 30 + runWayLength - (taxiWidth);
+            taxiPosYL = (this.Height - 30 - taxiWidth);
+
+
+
 
 
 
             //Taxiways
             e.Graphics.FillRectangle(Brushes.LightGray, 30, (this.Height - 30 - taxiWidth), runWayLength, taxiWidth);
-            e.Graphics.FillRectangle(Brushes.LightGray, 30, (this.Height - runWayLength2-30), runWayLength, taxiWidth);
-            e.Graphics.FillRectangle(Brushes.LightGray, runWayLength - taxiWidth +30 , 30, taxiWidth, runWayLength2);
+            e.Graphics.FillRectangle(Brushes.LightGray, 30, (this.Height - runWayLength2 - 30), runWayLength, taxiWidth);
+            e.Graphics.FillRectangle(Brushes.LightGray, runWayLength - taxiWidth + 30, 30, taxiWidth, runWayLength2);
             e.Graphics.FillRectangle(Brushes.LightGray, 30, 30, taxiWidth, runWayLength2);
-
 
             //Runways
             // North South
-            e.Graphics.FillRectangle(Brushes.SlateGray, halfformWidth - (halfformWidth / 5), 30, runWayWidth, runWayLength2); 
+            e.Graphics.FillRectangle(Brushes.SlateGray, halfformWidth - (halfformWidth / 5), 30, runWayWidth, runWayLength2);
             // East West
-            e.Graphics.FillRectangle(Brushes.SlateGray, 30 , halfformHeight - (halfformHeight / 5 ), runWayLength, runWayWidth);
-
-            // Hangar where planes go to die :D
-
-            e.Graphics.FillRectangle(Brushes.DarkRed, 30 + runWayLength - (2*taxiWidth ) + taxiWidth/2, (this.Height - 30  - taxiWidth - taxiWidth/2), taxiWidth * 2, taxiWidth * 2);
-            
+            e.Graphics.FillRectangle(Brushes.SlateGray, 30, halfformHeight - (halfformHeight / 5), runWayLength, runWayWidth);
 
 
 
-
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight + (2 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight + linespace, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - linespace, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (2 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (3 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (4 * linespace), zebraLength, zebraWidth);
-            // e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (5 * linespace), zebraLength, zebraWidth);
-
-
-            // e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-
-            for (int i = 2; i<11; i++)
+            for (int i = 2; i < 11; i++)
             {
                 e.Graphics.FillRectangle(Brushes.White, i * 100, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-                if (i< 7 && i != 4) e.Graphics.FillRectangle(Brushes.White, halfformWidth - (halfformWidth / 9) , i * 100, halfformWidth / 100, halfformWidth / 12);
+                if (i < 7 && i != 4) e.Graphics.FillRectangle(Brushes.White, halfformWidth - (halfformWidth / 9), i * 100, halfformWidth / 100, halfformWidth / 12);
 
             }
 
-            //e.Graphics.FillRectangle(Brushes.White, 200, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 300, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 400, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 500, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 600, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 700, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 800, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 900, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-            //e.Graphics.FillRectangle(Brushes.White, 1000, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
-
-            for (int i = 0; i<5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (i < 3)
                 {
@@ -148,29 +126,180 @@ namespace AirTrafficSimulation
                 }
 
                 e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight - (i * linespace), zebraLength, zebraWidth);
-                e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (i * linespace ), zebraLength, zebraWidth);
+                e.Graphics.FillRectangle(Brushes.White, 50, halfformHeight - (i * linespace), zebraLength, zebraWidth);
             }
 
-            for (int i = 0; i<7; i++)
+            for (int i = 0; i < 7; i++)
             {
                 e.Graphics.FillRectangle(Brushes.White, halfformWidth - ((1 + i) * linespace + 10), 50, zebraWidth, zebraLength);
                 e.Graphics.FillRectangle(Brushes.White, halfformWidth - ((1 + i) * linespace + 10), (this.Height - 50 - zebraLength), zebraWidth, zebraLength);
             }
 
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight + (2 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight + linespace, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight - linespace, zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight - (2 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight - (3 * linespace), zebraLength, zebraWidth);
-            //e.Graphics.FillRectangle(Brushes.White, 1100, halfformHeight - (4 * linespace), zebraLength, zebraWidth);
-            airPlane(e, x, y, size); 
-            
+            if (taxiing) taxiPos();
+            if (takingOff) takeOff(rw);
 
-            
+            if (takingOffOnRW)
+            {
+                if (rw == 90 && plainPos[0] > (30 + runWayLength / 2)) size += 10;
+                if (rw == 27 && plainPos[0] < (30 + runWayLength / 2)) size += 10;
+                if (rw == 18 && plainPos[1] > (30 + runWayLength2 / 2)) size += 10;
+                if (rw == 0 && plainPos[1] < (30 + runWayLength2 / 2)) size += 10;
+            }
+
+            airPlane(e, plainPos[0], plainPos[1], size);
+
+            // Hangar where planes go to die :D
+
+            e.Graphics.FillRectangle(Brushes.DarkRed, 30 + runWayLength - (2 * taxiWidth) + taxiWidth / 2, (this.Height - 30 - taxiWidth - taxiWidth / 2), taxiWidth * 2, taxiWidth * 2);
 
 
+        }
 
+        private void takeOff(int rw)
+        {
+            switch (rw)
+            {
+                case (90):
+                    if (plainPos[0] == 30 && plainPos[1] <= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
+                    {
+                        plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Right;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+                case (27):
+                    if (plainPos[0] == taxiPosXR && plainPos[1] >= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
+                    {
+                        plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Left;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+
+                case (18):
+                    if ((plainPos[0] >= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == 30)
+                    {
+                        plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Down;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+
+                case (0):
+                    if ((plainPos[0] <= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == taxiPosYL)
+                    {
+                        plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Up;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void taxiPos()
+        {
+            size = (runWayWidth / 10) * 5;
+            if ((objPos == Position.Right) && plainPos[0] >= taxiPosXR)
+            {
+                if (plainPos[1] >= taxiPosYU)
+                {
+                    objPos = Position.Down;
+                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+
+                }
+                else
+                {
+                    objPos = Position.Up;
+                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+                }
+                plainPos[0] = taxiPosXR;
+                if (rw == 27)
+                {
+                    taxiing = false;
+                    takingOff = true;
+                }
+            }
+
+            else if ((objPos == Position.Left) && plainPos[0] <= taxiPosXL)
+            {
+                if (plainPos[1] <= taxiPosYU)
+                {
+                    objPos = Position.Down;
+                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+                }
+                else
+                {
+                    objPos = Position.Up;
+                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                }
+                plainPos[0] = taxiPosXL;
+                if (rw == 90)
+                {
+                    taxiing = false;
+                    takingOff = true;
+                }
+            }
+
+            else if ((objPos == Position.Down) && plainPos[1] >= taxiPosYL)
+            {
+                if (plainPos[0] == taxiPosXR)
+                {
+                    objPos = Position.Left;
+                    plainPos[1] = taxiPosYL;
+                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                else
+                {
+                    objPos = Position.Right;
+                    plainPos[1] = taxiPosYU;
+                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                plainPos[1] = taxiPosYL;
+                if (rw == 0)
+                {
+                    taxiing = false;
+                    takingOff = true;
+                }
+            }
+
+            else if ((objPos == Position.Up) && plainPos[1] <= taxiPosYU)
+            {
+                if (plainPos[0] == taxiPosXR)
+                {
+                    objPos = Position.Left;
+                    plainPos[0] = taxiPosXL;
+                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                }
+                else
+                {
+                    objPos = Position.Right;
+                    plainPos[1] = taxiPosXR;
+                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                plainPos[1] = taxiPosYU;
+                if (rw == 18)
+                {
+                    taxiing = false;
+                    takingOff = true;
+                }
+            }
 
         }
 
@@ -184,21 +313,23 @@ namespace AirTrafficSimulation
 
         private void tmrMove_Tick(object sender, EventArgs e)
         {
+
+            // div with 100 for taxi and div with 15 for takeoff
             if (objPos == Position.Right)
             {
-                x += halfformWidth / 15;
+                plainPos[0] += halfformWidth / speed;
             }
-            else if ( objPos == Position.Left)
+            else if (objPos == Position.Left)
             {
-                x -= halfformWidth / 15; //take off and landing speed
+                plainPos[0] -= halfformWidth / speed; //take off and landing speed
             }
             else if (objPos == Position.Up)
             {
-                y -= halfformHeight / 40; // taxi speed
+                plainPos[1] -= halfformHeight / speed; // taxi speed
             }
             else if (objPos == Position.Down)
             {
-                y += halfformHeight / 40;
+                plainPos[1] += halfformHeight / speed;
             }
 
             Invalidate();
@@ -214,15 +345,15 @@ namespace AirTrafficSimulation
 
         private void airPlane(PaintEventArgs e, int x, int y, int size)
         {
-            
-            e.Graphics.DrawImage(plane , x, y, size, size);
+
+            e.Graphics.DrawImage(plane, x, y, size, size);
         }
 
         public bool isOnRunway(int x, int y)
         {
             return (((x > (halfformWidth - halfformWidth / 5) && (x < ((halfformWidth - halfformWidth / 5) + runWayWidth)) &&
             (y > 30 && y < (30 + runWayLength2)))) || ((x > 30 && x < 30 + runWayLength) &&
-                (y > (halfformHeight - (halfformHeight / 5)) && y < (halfformHeight - (halfformHeight / 5)) + runWayWidth)));       
+                (y > (halfformHeight - (halfformHeight / 5)) && y < (halfformHeight - (halfformHeight / 5)) + runWayWidth)));
         }
 
         public bool isInHangar(int x, int y)
@@ -233,10 +364,12 @@ namespace AirTrafficSimulation
 
         public bool isOnTaxiWay(int x, int y)
         {
-            return (x > 30 && x < 30+runWayLength && y > (this.Height - 30 - taxiWidth)+30 && y < (this.Height - 30 - taxiWidth)+taxiWidth) 
-                || (x > 30 && x < 30+runWayLength && y > (this.Height - runWayLength2 - 30) && y < (this.Height - runWayLength2 - 30)+taxiWidth)
-                || (x > runWayLength - taxiWidth + 30 && x < (runWayLength - taxiWidth + 30)+taxiWidth && y > 30 && y < 30+runWayLength2)
-                || (x > 30 && x < 30+taxiWidth && y > 30 && y < 30+runWayLength2);
+            return (x > 30 && x < 30 + runWayLength && y > (this.Height - 30 - taxiWidth) + 30 && y < (this.Height - 30 - taxiWidth) + taxiWidth)
+                || (x > 30 && x < 30 + runWayLength && y > (this.Height - runWayLength2 - 30) && y < (this.Height - runWayLength2 - 30) + taxiWidth)
+                || (x > runWayLength - taxiWidth + 30 && x < (runWayLength - taxiWidth + 30) + taxiWidth && y > 30 && y < 30 + runWayLength2)
+                || (x > 30 && x < 30 + taxiWidth && y > 30 && y < 30 + runWayLength2);
         }
+
+
     }
 }
