@@ -27,7 +27,7 @@ namespace AirTrafficSimulation
             AirField airfield = new AirField();
             Application.Run(airfield);
             Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity);
-            //Controller.Translator translator = new Controller.Translator(airport,airfield);
+            Controller.Translator translator = new Controller.Translator(airport.getSpace("runway"),airport.getSpace("taxiway"));
 
             //airport.printElements();
             //public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace rwlSpace, SequentialSpace twSpace, string credentials)
