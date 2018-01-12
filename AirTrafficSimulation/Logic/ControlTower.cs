@@ -18,8 +18,6 @@ namespace AirTrafficSimulation
         private SequentialSpace hangarSpace;
         private SequentialSpace airplaneSpace;
 
-        private Controller.Translator translator;
-
         public ControlTower(SequentialSpace runways, SequentialSpace taxiways, SequentialSpace hangars, SequentialSpace airplanes) 
         {
             this.runwaySpace = runways;
@@ -27,25 +25,46 @@ namespace AirTrafficSimulation
             this.hangarSpace = hangars;
             this.airplaneSpace = airplanes;
 
-            this.translator = new Controller.Translator(runways,taxiways);
-
             //this.repository.AddSpace("Runways", runways);
             //this.repository.AddSpace("Taxiways", taxiways);
             //this.repository.AddSpace("Hangars", hangars);
 
         }
-        public ITuple getRunwayClearance()
+        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName)
         {
-            ITuple freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));//("runWay", typeof(SequentialSpace)); //Finds the relevant category
-            if (freeRunwaySpace != null)
-            {
-                //string freeRunwayLock = freeRunwaySpace[0] + " " + freeRunwaySpace[1] + " -lock";
-                //return (freeRunwayLock);
-                //freeRunwaySpace.QueryAll("Runway"); //Finds a free runway
-                return freeRunwaySpace;
-            }
-            return null;
+            return getRunwayClearance(planeCredentials, currentLocationName, 0);
         }
+
+        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName, int currentLocationCredential)
+        {
+            ITuple freeRunwaySpace;
+            Console.WriteLine(planeCredentials + " found a Control Tower and is getting clearance for accessing the runway...");
+            if (currentLocationName == "Taxiway")
+            {
+                freeRunwaySpace = runwaySpace.Get("Runway Nr.", currentLocationCredential);
+            }
+            else
+            {
+                freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
+            }
+            Console.WriteLine(planeCredentials + " has been granted clearance to access " + freeRunwaySpace[0] + freeRunwaySpace[1]);
+            return freeRunwaySpace;
+        }
+
+        public ITuple quaryRunwaytakeOffClearance()
+        {
+            ITuple freeRunwaySpace = runwaySpace.Query("Runway Nr.", typeof(int));
+            return freeRunwaySpace;
+        }
+        public void getRunway(ITuple space)
+        {
+            if((string)space[0] == "Runway Nr.")
+            {
+                //Console.WriteLine("Locking Runway Nr. {} / getting key",space[1]);
+                runwaySpace.Get(space);
+            }
+        }
+
         public void putRunway(ITuple space)
         {
             if ((string)space[0] == "Runway Nr.")
