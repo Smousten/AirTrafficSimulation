@@ -51,16 +51,20 @@ namespace AirTrafficSimulation
             return freeRunwaySpace;
         }
 
-        public ITuple quaryRunwaytakeOffClearance()
+        public ITuple isRunwayFreeForTakeoff(int runwayNr)
         {
-            ITuple freeRunwaySpace = runwaySpace.Query("Runway Nr.", typeof(int));
-            return freeRunwaySpace;
+            ITuple freeRunwaySpace = runwaySpace.QueryP("Runway Nr.", runwayNr);
+            if (freeRunwaySpace != null)
+            {
+                return freeRunwaySpace;
+            }
+            return null;
         }
         public void getRunway(ITuple space)
         {
             if((string)space[0] == "Runway Nr.")
             {
-                //Console.WriteLine("Locking Runway Nr. {} / getting key",space[1]);
+                Console.WriteLine("Locking Runway Nr. " + space[1] +"/ getting key");
                 runwaySpace.Get(space);
             }
         }

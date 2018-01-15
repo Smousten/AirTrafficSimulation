@@ -27,8 +27,11 @@ namespace AirTrafficSimulation
         private int noOfPlanes;
         private AirField airField;
 
+        public bool realisticMode;
+        public string windDirection;
 
-        public Airport(int noOfRunways, int noOfTaxiways, int barrier, int noOfPlanes, AirField airField)//, int noOfHangers, int noOfControlTowers) 
+
+        public Airport(ITuple setup)//, int noOfHangers, int noOfControlTowers) 
         {
             
             //this.airport = new SpaceRepository();
@@ -38,11 +41,13 @@ namespace AirTrafficSimulation
             this.airplaneSpace = new SequentialSpace();
             //this.hanger = new SequentialSpace();
             //this.controlTower = new SequentialSpace();
-            this.noOfRunways = noOfRunways;
-            this.noOfTaxiways = noOfTaxiways;
-            this.barrier = barrier;
-            this.noOfPlanes = noOfPlanes;
-            this.airField = airField;
+            this.noOfRunways = (int)setup[0];
+            this.noOfTaxiways = (int)setup[1];
+            this.barrier = (int)setup[2];
+            this.noOfPlanes = (int)setup[3];
+            this.airField = (AirField)setup[4];
+            this.realisticMode = (bool)setup[5];
+            this.windDirection = (string)setup[6];
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
@@ -136,8 +141,8 @@ namespace AirTrafficSimulation
             int counter = 0;
             while (counter<noOfPlanes)
             {
-                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField);
-                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField, realisticMode, windDirection);
+                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.efficientTakeoff()))).Start();
 
                 //if (counter < noOfPlanes / 2)
                 //{

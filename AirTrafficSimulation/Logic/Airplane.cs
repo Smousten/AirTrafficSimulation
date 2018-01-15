@@ -28,7 +28,10 @@ namespace AirTrafficSimulation
 
         private Controller.Translator translator;
 
-        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, AirField airField) //SpaceRepository airportRepository)
+        private string windDirection;
+        private bool realisticmode;
+
+        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, AirField airField, bool realisticMode, string windDirection) //SpaceRepository airportRepository)
         {
             //this.airport = airportRepository;
             this.controlTowerSpace = CTSpace;
@@ -40,6 +43,9 @@ namespace AirTrafficSimulation
 
             this.translator = new Controller.Translator(rwSpace, twSpace, airField);
 
+            this.windDirection = windDirection;
+            this.realisticmode = realisticMode;
+
         }
         public void flyEternally(string startingLocation)
         {
@@ -47,13 +53,13 @@ namespace AirTrafficSimulation
             {
                 if (startingLocation == "Airspace")
                 {
-                    landing();
-                    takeoff();
+                    efficientLanding();
+                    efficientTakeoff();
                 }
                 else if (startingLocation == "Hanger")
                 {
-                    takeoff();
-                    landing();
+                    efficientTakeoff();
+                    efficientLanding();
                 }
                 else
                 {
@@ -63,6 +69,31 @@ namespace AirTrafficSimulation
             }
         }
         public void landing()
+        {
+            if (realisticmode)
+            {
+                realisticLanding();
+            }
+            else
+            {
+                efficientLanding();
+            }
+        }
+
+        public void takeoff()
+        {
+            if (realisticmode)
+            {
+                realisticTakeoff();
+            }
+            else
+            {
+                efficientTakeoff();
+            }
+        }
+
+
+        public void efficientLanding()
         {
             //Establishing communication
             Console.WriteLine(credentials + " is Searching for control tower...");
@@ -123,11 +154,62 @@ namespace AirTrafficSimulation
 
             }
         }
+        public void efficientTakeoff()
+        {
+            //Establishing communication
+            Console.WriteLine(credentials + " is searching for control tower...");
+            //ITuple controlTowerTupleInner = new dotSpace.Objects.Space.Tuple("Control Tower Nr.", typeof(int), typeof(ControlTower));
+            //ITuple controlTowerTuple = airport.QueryP("Control Towers", controlTowerTupleInner);
+            if (controlTowerSpace != null)
+            {
+                ITuple controlTowerTuple = controlTowerSpace.Query("Control Tower Nr.", typeof(int), typeof(ControlTower));
+                //Console.WriteLine(controlTowerTuple);
+                if (controlTowerTuple != null)
+                {
+                    ControlTower controlTower = (ControlTower)controlTowerTuple[2];
+                    while (true)
+                    {
+                        hangarToTaxiway("Charlie");
+
+                        if (controlTower.isRunwayFreeForTakeoff(00) != null)
+                        {
+                            ITuple freeRunwayS = controlTower.isRunwayFreeForTakeoff(00);
+                            taxiwayToRunway("Charlie", freeRunwayS, controlTower);
+                            break;
+
+                        }
+                        taxiwayToTaxiway("Charlie", "Delta");
+                        if (controlTower.isRunwayFreeForTakeoff(90) != null)
+                        {
+                            ITuple freeRunwayW = controlTower.isRunwayFreeForTakeoff(90);
+                            taxiwayToRunway("Delta", freeRunwayW, controlTower);
+                            break;
+                        }
+                        taxiwayToTaxiway("Delta", "Epsilon");
+                        if (controlTower.isRunwayFreeForTakeoff(18) != null)
+                        {
+                            ITuple freeRunwayN = controlTower.isRunwayFreeForTakeoff(18);
+                            taxiwayToRunway("Epsilon", freeRunwayN, controlTower);
+                            break;
+                        }
+                        taxiwayToTaxiway("Alfa", "Beta");
+                        if (controlTower.isRunwayFreeForTakeoff(27) != null)
+                        {
+                            ITuple freeRunwayE = controlTower.isRunwayFreeForTakeoff(27);
+                            taxiwayToRunway("Beta", freeRunwayE, controlTower);
+                            break;
+                        }
+                        taxiwayToHangar("Beta");
+                    }
+
+                }
+            }
+        }
 
         private void runwayToTaxiway(string taxiway, ControlTower ct, ITuple frwT)
         {
             updateGraphics(credentials, airspaceName, "" + frwT[0] + frwT[1]);
-            runwaySpace.Get(runwayGUILock);
+            //runwaySpace.Get(runwayGUILock);
 
             Console.WriteLine(credentials + " is searching for free landing taxiway...");
             ITuple freeTaxiWayTupleA = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
@@ -138,7 +220,7 @@ namespace AirTrafficSimulation
             updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleA[0] + freeTaxiWayTupleA[1]);
             Console.WriteLine(credentials + " is putting free taxiway back with new barrier " + barrierLimitA);
             taxiwaySpace.Put((string)freeTaxiWayTupleA[0], freeTaxiWayTupleA[1], barrierLimitA, (barrierLimitA) > 0);
-            taxiwaySpace.Get(taxiwayGUILock);
+            //taxiwaySpace.Get(taxiwayGUILock);
             //System.Threading.Thread.Sleep(2500);
         }
 
@@ -203,7 +285,68 @@ namespace AirTrafficSimulation
 
         }
 
-        public void takeoff()
+
+
+        public void realisticLanding()
+        {
+            //Establishing communication
+            Console.WriteLine(credentials + " is Searching for control tower...");
+            ITuple controlTowerTuple = controlTowerSpace.Query("Control Tower Nr.", typeof(int), typeof(ControlTower));
+
+            //Getting landing clearance
+            ControlTower controlTower = (ControlTower)controlTowerTuple[2];
+            Console.WriteLine(credentials + " found control tower and getting landing clearance...");
+
+
+            switch (windDirection)
+            {
+                case "S":
+                    ITuple freeLandingRunwayS = runwaySpace.Get("Runway Nr.", 00);
+
+                    runwayToTaxiway("Alfa", controlTower, freeLandingRunwayS);
+
+                    taxiwayToTaxiway("Alfa", "Beta");
+
+                    taxiwayToHangar("Beta");
+
+
+                    break;
+                case "N":
+                    ITuple freeLandingRunwayN = runwaySpace.Get("Runway Nr.", 18);
+
+                    runwayToTaxiway("Delta", controlTower, freeLandingRunwayN);
+
+                    taxiwayToTaxiway("Delta", "Epsilon");
+
+                    taxiwayToTaxiway("Epsilon", "Alfa");
+
+                    taxiwayToTaxiway("Alfa", "Beta");
+
+                    taxiwayToHangar("Beta");
+
+                    break;
+                case "W":
+                    ITuple freeLandingRunwayW = runwaySpace.Get("Runway Nr.", 90);
+
+                    runwayToTaxiway("Beta", controlTower, freeLandingRunwayW);
+
+                    break;
+                case "E":
+                    ITuple freeLandingRunwayE = runwaySpace.Get("Runway Nr.", 27);
+
+                    runwayToTaxiway("Epsilon", controlTower, freeLandingRunwayE);
+
+                    taxiwayToTaxiway("Epsilon", "Alfa");
+
+                    taxiwayToTaxiway("Alfa", "Beta");
+
+                    taxiwayToHangar("Beta");
+
+                    break;
+            }
+        }
+
+        public void realisticTakeoff()
         {
             //Establishing communication
             Console.WriteLine(credentials + " is searching for control tower...");
@@ -216,50 +359,39 @@ namespace AirTrafficSimulation
                 if (controlTowerTuple != null)
                 {
                     ControlTower controlTower = (ControlTower)controlTowerTuple[2];
-                    ITuple freeRunwayLock = controlTower.quaryRunwaytakeOffClearance();
-                    switch ((int)freeRunwayLock[1])
+                    switch (windDirection)
                     {
-                        case 00:
+                        case "S":
                             hangarToTaxiway("Charlie");
-
-                            taxiwayToRunway("Charlie", freeRunwayLock, controlTower);
-
+                            ITuple freeTakeoffRunwayS = runwaySpace.Query("Runway Nr.", 00);
+                            taxiwayToRunway("Charlie", freeTakeoffRunwayS, controlTower);
                             break;
-                        case 18:
+                        case "N":
                             hangarToTaxiway("Charlie");
-
                             taxiwayToTaxiway("Charlie", "Delta");
-
                             taxiwayToTaxiway("Delta", "Episilon");
-
-                            taxiwayToRunway("Epsilon", freeRunwayLock, controlTower);
-
-
+                            ITuple freeTakeoffRunwayN = runwaySpace.Query("Runway Nr.", 18);
+                            taxiwayToRunway("Epsilon", freeTakeoffRunwayN, controlTower);
                             break;
-                        case 90:
+                        case "W":
                             hangarToTaxiway("Charlie");
-
                             taxiwayToTaxiway("Charlie", "Delta");
-
-                            taxiwayToRunway("Delta", freeRunwayLock, controlTower);
-
+                            ITuple freeTakeoffRunwayW = runwaySpace.Query("Runway Nr.", 90);
+                            taxiwayToRunway("Delta", freeTakeoffRunwayW, controlTower);
                             break;
-                        case 27:
+                        case "E":
                             hangarToTaxiway("Charlie");
-
                             taxiwayToTaxiway("Charlie", "Delta");
-
                             taxiwayToTaxiway("Delta", "Episilon");
-
                             taxiwayToTaxiway("Epsilon", "Alfa");
-
-                            taxiwayToRunway("Alfa", freeRunwayLock, controlTower);
-
+                            ITuple freeTakeoffRunwayE = runwaySpace.Query("Runway Nr.", 27);
+                            taxiwayToRunway("Alfa", freeTakeoffRunwayE, controlTower);
                             break;
                     }
                 }
             }
         }
+
         private void updateGraphics(string planeCredentials, string currentLocationIdentifier, string nextLocationIdentifier)
         {
             translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, airspaceName);

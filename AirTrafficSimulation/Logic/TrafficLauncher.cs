@@ -15,18 +15,22 @@ namespace AirTrafficSimulation
         private static readonly int noOfRunways = 2;
         private static readonly int noOfTaxiWays = 5;
         private static readonly int taxiWayCapacity = 3;
-        private static readonly int noOfPlanes = 30;
+        private static readonly int noOfPlanes = 10;
+        private static bool realisticMode = false;
+        private static string windDirection = "N";
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
             AirField airfield = new AirField();
-            Application.Run(airfield);
-            Airport airport = new Airport(noOfRunways, noOfTaxiWays, taxiWayCapacity, noOfPlanes, airfield);
+            //Application.Run(airfield);
+            dotSpace.Objects.Space.Tuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays,taxiWayCapacity, noOfPlanes, airfield, realisticMode, windDirection);
+            Airport airport = new Airport(setupTuple);
 
             //airport.printElements();
             //Console.Read();
