@@ -142,18 +142,18 @@ namespace AirTrafficSimulation
             while (counter<noOfPlanes)
             {
                 Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField, realisticMode, windDirection);
-                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
 
-                //if (counter < noOfPlanes / 2)
-                //{
-                //    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-                //    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Airspace")))).Start();
-                //}
-                //else
-                //{
-                //    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
-                //    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Hangar")))).Start();
-                //}
+                if (counter < noOfPlanes / 2)
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Airspace")))).Start();
+                }
+                else
+                {
+                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Hangar")))).Start();
+                }
 
                 counter++;
             }

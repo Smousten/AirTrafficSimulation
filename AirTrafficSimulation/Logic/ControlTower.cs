@@ -60,31 +60,27 @@ namespace AirTrafficSimulation
         }
 
 
-        public ITuple isRunwayFreeForTakeoff(int runwayNr)
+        public ITuple isRunwayFreeForTakeoff(string planeCredentials, int runwayNr)
         {
+            Console.WriteLine(planeCredentials + " is at runway " + runwayNr + " and trying to get takeoff clearance");
             ITuple freeRunwaySpace = runwaySpace.GetP("Runway Nr.", runwayNr);
-            if (freeRunwaySpace != null)
-            {
-                return freeRunwaySpace;
-            }
-            return null;
+            return freeRunwaySpace;
         }
-        public void getRunway(ITuple space)
+        public void getRunway(string planeCredentials, ITuple space)
         {
             if((string)space[0] == "Runway Nr.")
             {
-                Console.WriteLine("Locking Runway Nr. " + space[1] +"/ getting key");
-                runwaySpace.Get(space);
-                Console.WriteLine("test");
+                Console.WriteLine(planeCredentials + " Locking Runway Nr. " + space[1] +" / getting key");
+                runwaySpace.Get(space[0],space[1]);
             }
         }
 
-        public void putRunway(ITuple space)
+        public void putRunway(string planeCredentials, ITuple space)
         {
             if ((string)space[0] == "Runway Nr.")
             {
-                Console.WriteLine("Unlocking Runway Nr. {0} / putting it back",space[1]);
-                runwaySpace.Put(space);
+                Console.WriteLine(planeCredentials + " Unlocking Runway Nr. " +space[1]+ " / putting it back");
+                runwaySpace.Put(space[0],space[1]);
             }
         }
     }
