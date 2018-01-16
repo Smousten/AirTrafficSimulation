@@ -16,8 +16,8 @@ namespace AirTrafficSimulation
         private static readonly int noOfTaxiWays = 5;
         private static readonly int taxiWayCapacity = 3;
         private static readonly int noOfPlanes = 50;
-        private static bool realisticMode = true;
-        private static string windDirection = "E";
+        private static bool realisticMode = false;
+        private static string windDirection = "N";
 
         /// <summary>
         /// The main entry point for the application.

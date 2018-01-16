@@ -385,6 +385,7 @@ namespace AirTrafficSimulation
                             taxiwayToTaxiway("Delta", "Epsilon");
                             taxiwayToTaxiway("Epsilon", "Alfa");
                             ITuple freeTakeoffRunwayE = runwaySpace.Query("Runway Nr.", 90);
+                            Console.WriteLine(credentials + " succesfully found runway");
                             taxiwayToRunway("Alfa", freeTakeoffRunwayE, controlTower, "realistic");
                             break;
                     }
