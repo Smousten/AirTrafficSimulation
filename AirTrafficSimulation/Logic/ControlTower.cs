@@ -30,30 +30,39 @@ namespace AirTrafficSimulation
             //this.repository.AddSpace("Hangars", hangars);
 
         }
-        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName)
-        {
-            return getRunwayClearance(planeCredentials, currentLocationName, 0);
-        }
+        //public ITuple getRunwayClearance(string planeCredentials, string currentLocationName)
+        //{
+        //    return getRunwayClearance(planeCredentials, currentLocationName, 0);
+        //}
 
-        public ITuple getRunwayClearance(string planeCredentials, string currentLocationName, int currentLocationCredential)
+        //public ITuple getRunwayClearance(string planeCredentials, string currentLocationName, int currentLocationCredential)
+        //{
+        //    ITuple freeRunwaySpace;
+        //    Console.WriteLine(planeCredentials + " found a Control Tower and is getting clearance for accessing the runway...");
+        //    if (currentLocationName == "Taxiway")
+        //    {
+        //        freeRunwaySpace = runwaySpace.Get("Runway Nr.", currentLocationCredential);
+        //    }
+        //    else
+        //    {
+        //        freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
+        //    }
+        //    Console.WriteLine(planeCredentials + " has been granted clearance to access " + freeRunwaySpace[0] + freeRunwaySpace[1]);
+        //    return freeRunwaySpace;
+        //}
+
+        public ITuple getRunwayClearance(string planeCredentials)
         {
             ITuple freeRunwaySpace;
             Console.WriteLine(planeCredentials + " found a Control Tower and is getting clearance for accessing the runway...");
-            if (currentLocationName == "Taxiway")
-            {
-                freeRunwaySpace = runwaySpace.Get("Runway Nr.", currentLocationCredential);
-            }
-            else
-            {
-                freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
-            }
-            Console.WriteLine(planeCredentials + " has been granted clearance to access " + freeRunwaySpace[0] + freeRunwaySpace[1]);
+            freeRunwaySpace = runwaySpace.Get("Runway Nr.", typeof(int));
             return freeRunwaySpace;
         }
 
+
         public ITuple isRunwayFreeForTakeoff(int runwayNr)
         {
-            ITuple freeRunwaySpace = runwaySpace.QueryP("Runway Nr.", runwayNr);
+            ITuple freeRunwaySpace = runwaySpace.GetP("Runway Nr.", runwayNr);
             if (freeRunwaySpace != null)
             {
                 return freeRunwaySpace;
@@ -66,6 +75,7 @@ namespace AirTrafficSimulation
             {
                 Console.WriteLine("Locking Runway Nr. " + space[1] +"/ getting key");
                 runwaySpace.Get(space);
+                Console.WriteLine("test");
             }
         }
 

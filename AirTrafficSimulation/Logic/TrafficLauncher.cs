@@ -15,7 +15,7 @@ namespace AirTrafficSimulation
         private static readonly int noOfRunways = 2;
         private static readonly int noOfTaxiWays = 5;
         private static readonly int taxiWayCapacity = 3;
-        private static readonly int noOfPlanes = 10;
+        private static readonly int noOfPlanes = 5;
         private static bool realisticMode = false;
         private static string windDirection = "N";
 
@@ -29,7 +29,7 @@ namespace AirTrafficSimulation
             //Application.SetCompatibleTextRenderingDefault(false);
             AirField airfield = new AirField();
             //Application.Run(airfield);
-            dotSpace.Objects.Space.Tuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays,taxiWayCapacity, noOfPlanes, airfield, realisticMode, windDirection);
+            ITuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays,taxiWayCapacity, noOfPlanes, airfield, realisticMode, windDirection);
             Airport airport = new Airport(setupTuple);
 
             //airport.printElements();

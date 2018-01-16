@@ -56,7 +56,7 @@ namespace AirTrafficSimulation
                 {
                     if (noOfRunways == 2)
                     {
-                        this.runWaySpace.Put("Runway Nr.", 00);
+                        this.runWaySpace.Put("Runway Nr.", 0);
                     }
                         
                     else {
@@ -142,7 +142,7 @@ namespace AirTrafficSimulation
             while (counter<noOfPlanes)
             {
                 Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField, realisticMode, windDirection);
-                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.efficientTakeoff()))).Start();
+                (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
 
                 //if (counter < noOfPlanes / 2)
                 //{

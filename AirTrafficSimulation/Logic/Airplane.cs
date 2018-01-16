@@ -102,11 +102,11 @@ namespace AirTrafficSimulation
             //Getting landing clearance
             ControlTower controlTower = (ControlTower)controlTowerTuple[2];
             Console.WriteLine(credentials + " found control tower and getting landing clearance...");
-            ITuple freeRunwayForLanding = controlTower.getRunwayClearance(credentials, airspaceName);
+            ITuple freeRunwayForLanding = controlTower.getRunwayClearance(credentials);
 
             switch ((int)freeRunwayForLanding[1])
             {
-                case 00:
+                case 0:
                     //Leave airspace, land in airport
                     runwayToTaxiway("Alfa", controlTower, freeRunwayForLanding);
 
@@ -170,33 +170,33 @@ namespace AirTrafficSimulation
                     while (true)
                     {
                         hangarToTaxiway("Charlie");
-
-                        if (controlTower.isRunwayFreeForTakeoff(00) != null)
+                        ITuple freeRunwayS = controlTower.isRunwayFreeForTakeoff(0);
+                        if (freeRunwayS != null)
                         {
-                            ITuple freeRunwayS = controlTower.isRunwayFreeForTakeoff(00);
-                            taxiwayToRunway("Charlie", freeRunwayS, controlTower);
+                            
+                            taxiwayToRunway("Charlie", freeRunwayS, controlTower, "efficient");
                             break;
 
                         }
                         taxiwayToTaxiway("Charlie", "Delta");
+                        ITuple freeRunwayW = controlTower.isRunwayFreeForTakeoff(90);
                         if (controlTower.isRunwayFreeForTakeoff(90) != null)
                         {
-                            ITuple freeRunwayW = controlTower.isRunwayFreeForTakeoff(90);
-                            taxiwayToRunway("Delta", freeRunwayW, controlTower);
+                            taxiwayToRunway("Delta", freeRunwayW, controlTower, "efficient");
                             break;
                         }
                         taxiwayToTaxiway("Delta", "Epsilon");
-                        if (controlTower.isRunwayFreeForTakeoff(18) != null)
+                        ITuple freeRunwayN = controlTower.isRunwayFreeForTakeoff(0);
+                        if (controlTower.isRunwayFreeForTakeoff(0) != null)
                         {
-                            ITuple freeRunwayN = controlTower.isRunwayFreeForTakeoff(18);
-                            taxiwayToRunway("Epsilon", freeRunwayN, controlTower);
+                            taxiwayToRunway("Epsilon", freeRunwayN, controlTower, "efficient");
                             break;
                         }
                         taxiwayToTaxiway("Alfa", "Beta");
-                        if (controlTower.isRunwayFreeForTakeoff(27) != null)
+                        ITuple freeRunwayE = controlTower.isRunwayFreeForTakeoff(90);
+                        if (controlTower.isRunwayFreeForTakeoff(90) != null)
                         {
-                            ITuple freeRunwayE = controlTower.isRunwayFreeForTakeoff(27);
-                            taxiwayToRunway("Beta", freeRunwayE, controlTower);
+                            taxiwayToRunway("Beta", freeRunwayE, controlTower, "efficient");
                             break;
                         }
                         taxiwayToHangar("Beta");
@@ -212,14 +212,14 @@ namespace AirTrafficSimulation
             //runwaySpace.Get(runwayGUILock);
 
             Console.WriteLine(credentials + " is searching for free landing taxiway...");
-            ITuple freeTaxiWayTupleA = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
-            int barrierLimitA = (int)freeTaxiWayTupleA[2] - 1;
+            ITuple freeTaxiWayTupleTo = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
+            int barrierLimitA = (int)freeTaxiWayTupleTo[2] - 1;
             Console.WriteLine(credentials + " found free taxiway with barrier value " + (barrierLimitA + 1) + " and getting free taxiway tuple...");
             Console.WriteLine(credentials + " is putting runway lock with ID " + frwT[0] + frwT[1]);
             ct.putRunway(frwT);
-            updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleA[0] + freeTaxiWayTupleA[1]);
-            Console.WriteLine(credentials + " is putting free taxiway back with new barrier " + barrierLimitA);
-            taxiwaySpace.Put((string)freeTaxiWayTupleA[0], freeTaxiWayTupleA[1], barrierLimitA, (barrierLimitA) > 0);
+            updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleTo[0] + freeTaxiWayTupleTo[1]);
+            Console.WriteLine(credentials + " is putting free taxiway back with lower barrier " + barrierLimitA);
+            taxiwaySpace.Put((string)freeTaxiWayTupleTo[0], freeTaxiWayTupleTo[1], barrierLimitA, (barrierLimitA) > 0);
             //taxiwaySpace.Get(taxiwayGUILock);
             //System.Threading.Thread.Sleep(2500);
         }
@@ -227,13 +227,13 @@ namespace AirTrafficSimulation
         private void taxiwayToTaxiway(string fromTw, string toTw)
         {
             Console.WriteLine(credentials + " is searching for taxiway " + fromTw + ", to increase barrier...");
-            ITuple freeTaxiWayTupleB = taxiwaySpace.Get("Taxiway", toTw, typeof(int), true);
-            ITuple usedTaxiWayTupleA = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
-            int usedbarrierLimitA = (int)usedTaxiWayTupleA[2] + 1;
-            Console.WriteLine(credentials + " is increasing landing " + usedTaxiWayTupleA[0] + usedTaxiWayTupleA[1] + "'s taxiway barrierLimit to " + usedbarrierLimitA);
+            ITuple freeTaxiWayTupleTo = taxiwaySpace.Get("Taxiway", toTw, typeof(int), true);
+            ITuple usedTaxiWayTupleFrom = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
+            int usedbarrierLimitA = (int)usedTaxiWayTupleFrom[2] + 1;
+            Console.WriteLine(credentials + " is increasing " + usedTaxiWayTupleFrom[0] + usedTaxiWayTupleFrom[1] + "'s taxiway barrierLimit to " + usedbarrierLimitA);
             taxiwaySpace.Put("Taxiway", fromTw, usedbarrierLimitA, (usedbarrierLimitA > 0));
             //UPADTE GRAPHICS TAXIWAY TO TAXIWAY
-            int barrierLimitB = (int)freeTaxiWayTupleB[2] - 1;
+            int barrierLimitB = (int)freeTaxiWayTupleTo[2] - 1;
             taxiwaySpace.Put("Taxiway", toTw, barrierLimitB, (barrierLimitB > 0));
         }
 
@@ -242,7 +242,7 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " is searching for taxiway " + fromTw + ", to increase barrier...");
             ITuple usedTaxiWayTuple = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
             int usedbarrierLimit = (int)usedTaxiWayTuple[2] + 1;
-            Console.WriteLine(credentials + " is increasing landing " + usedTaxiWayTuple[1] + "'s taxiway barrierLimit to " + usedbarrierLimit);
+            Console.WriteLine(credentials + " is increasing " + usedTaxiWayTuple[1] + "'s taxiway barrierLimit to " + usedbarrierLimit);
             taxiwaySpace.Put("Taxiway", usedTaxiWayTuple[1], usedbarrierLimit, (usedbarrierLimit) > 0);
             Console.WriteLine(credentials + " has safely arrived in the hangar!");
             updateGraphics(credentials, "" + usedTaxiWayTuple[0] + usedTaxiWayTuple[1], hangarName);
@@ -255,31 +255,28 @@ namespace AirTrafficSimulation
             ITuple freeTaxiWayTuple = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
             int barrierLimit = (int)freeTaxiWayTuple[2] - 1;
 
-            Console.WriteLine(credentials + " found free take-off taxiway with barrier value " + (barrierLimit + 1) + " and getting free taxiway tuple...");
-            //System.Threading.Thread.Sleep(2500);                      
+            Console.WriteLine(credentials + " found free take-off taxiway with barrier value " + (barrierLimit + 1) + " and getting free taxiway tuple...");       
             Console.WriteLine(credentials + " is putting free taxiway back with new barrier " + barrierLimit);
             taxiwaySpace.Put((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit, barrierLimit > 0);
-            //break;
-
         }
-        private void taxiwayToRunway(string taxiway, ITuple frwL, ControlTower ct)
+        private void taxiwayToRunway(string taxiway, ITuple frwL, ControlTower ct, string mode)
         {
             //Make space on the taxiway you just left
+            if (mode == "realistic")
+            {
+                ct.getRunway(frwL);
+            }
             Console.WriteLine(credentials + " is searching for same take-off taxiway, to increase barrier...");
             ITuple usedtaxiway = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), typeof(bool));
             int bl = (int)usedtaxiway[2] + 1;
             Console.WriteLine(credentials + " is increasing take-off taxiway " + usedtaxiway[1] + "'s barrierlimit to " + bl);
 
-            ct.getRunway(frwL);
+
             taxiwaySpace.Put((string)usedtaxiway[0], usedtaxiway[1], bl, bl > 0);
             Console.WriteLine(credentials + " has safely left the taxiway!");
 
             //Leave the runway
-            //runwaySpace.Get(freeRunwayLock);
             Console.WriteLine(credentials + " got takeoff clearance with ID " + frwL[0] + frwL[1] + " and left the airport!");
-            //leave airport, enter in airspace
-            //Thread.sleep(5000);
-            //runwaySpace.Put(freeRunwayLock);
             ct.putRunway(frwL);
             //Airspace step
 
@@ -301,7 +298,7 @@ namespace AirTrafficSimulation
             switch (windDirection)
             {
                 case "S":
-                    ITuple freeLandingRunwayS = runwaySpace.Get("Runway Nr.", 00);
+                    ITuple freeLandingRunwayS = runwaySpace.Get("Runway Nr.", 0);
 
                     runwayToTaxiway("Alfa", controlTower, freeLandingRunwayS);
 
@@ -312,7 +309,7 @@ namespace AirTrafficSimulation
 
                     break;
                 case "N":
-                    ITuple freeLandingRunwayN = runwaySpace.Get("Runway Nr.", 18);
+                    ITuple freeLandingRunwayN = runwaySpace.Get("Runway Nr.", 0);
 
                     runwayToTaxiway("Delta", controlTower, freeLandingRunwayN);
 
@@ -332,7 +329,7 @@ namespace AirTrafficSimulation
 
                     break;
                 case "E":
-                    ITuple freeLandingRunwayE = runwaySpace.Get("Runway Nr.", 27);
+                    ITuple freeLandingRunwayE = runwaySpace.Get("Runway Nr.", 90);
 
                     runwayToTaxiway("Epsilon", controlTower, freeLandingRunwayE);
 
@@ -363,29 +360,29 @@ namespace AirTrafficSimulation
                     {
                         case "S":
                             hangarToTaxiway("Charlie");
-                            ITuple freeTakeoffRunwayS = runwaySpace.Query("Runway Nr.", 00);
-                            taxiwayToRunway("Charlie", freeTakeoffRunwayS, controlTower);
+                            ITuple freeTakeoffRunwayS = runwaySpace.Query("Runway Nr.", 0);
+                            taxiwayToRunway("Charlie", freeTakeoffRunwayS, controlTower, "realistic");
                             break;
                         case "N":
                             hangarToTaxiway("Charlie");
                             taxiwayToTaxiway("Charlie", "Delta");
                             taxiwayToTaxiway("Delta", "Episilon");
-                            ITuple freeTakeoffRunwayN = runwaySpace.Query("Runway Nr.", 18);
-                            taxiwayToRunway("Epsilon", freeTakeoffRunwayN, controlTower);
+                            ITuple freeTakeoffRunwayN = runwaySpace.Query("Runway Nr.", 0);
+                            taxiwayToRunway("Epsilon", freeTakeoffRunwayN, controlTower, "realistic");
                             break;
                         case "W":
                             hangarToTaxiway("Charlie");
                             taxiwayToTaxiway("Charlie", "Delta");
                             ITuple freeTakeoffRunwayW = runwaySpace.Query("Runway Nr.", 90);
-                            taxiwayToRunway("Delta", freeTakeoffRunwayW, controlTower);
+                            taxiwayToRunway("Delta", freeTakeoffRunwayW, controlTower,"realistic");
                             break;
                         case "E":
                             hangarToTaxiway("Charlie");
                             taxiwayToTaxiway("Charlie", "Delta");
                             taxiwayToTaxiway("Delta", "Episilon");
                             taxiwayToTaxiway("Epsilon", "Alfa");
-                            ITuple freeTakeoffRunwayE = runwaySpace.Query("Runway Nr.", 27);
-                            taxiwayToRunway("Alfa", freeTakeoffRunwayE, controlTower);
+                            ITuple freeTakeoffRunwayE = runwaySpace.Query("Runway Nr.", 90);
+                            taxiwayToRunway("Alfa", freeTakeoffRunwayE, controlTower, "realistic");
                             break;
                     }
                 }
