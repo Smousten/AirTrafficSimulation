@@ -41,7 +41,7 @@ namespace AirTrafficSimulation
             this.runwayGUILock = credentials + "Runway" + "-lock";
             this.taxiwayGUILock = credentials + "Taxiway" + "-lock";
 
-            this.translator = new Controller.Translator(rwSpace, twSpace, airField);
+           // this.translator = new Controller.Translator(rwSpace, twSpace, airField);
 
             this.windDirection = windDirection;
             this.realisticmode = realisticMode;
@@ -384,7 +384,7 @@ namespace AirTrafficSimulation
 
         private void updateGraphics(string planeCredentials, string currentLocationIdentifier, string nextLocationIdentifier)
         {
-            translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, airspaceName);
+           // translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, airspaceName);
         }
     }
 }
