@@ -76,7 +76,7 @@ namespace AirTrafficSimulation
             //objPos = Position.Right;
 
             //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-            testplain = new singleplain("plain1", 0,  90, 2);
+            testplain = new singleplain("plain1", 0, 90, 2);
             testplain2 = new singleplain("plain2", 0, 18, 2);
             testplain3 = new singleplain("plain3", 0, 27, 2);
             testplain4 = new singleplain("plain4", 0, 0, 3);
@@ -85,6 +85,37 @@ namespace AirTrafficSimulation
             plains.Add(testplain3);
             plains.Add(testplain4);
         }
+
+        //public void run()
+        //{
+        //    InitializeComponent();
+        //    startX = 30 + (taxiWidth / 2);
+        //    startY = startX;
+        //    taxiSpeed = 10;
+        //    takeoffSpeed = 15;
+        //    takingOff = false;
+        //    taxiing = true;
+        //    takingOffOnRW = false;
+        //    rw = 90;
+        //    speed = taxiSpeed;
+
+
+        //    //plainPos[0] = plainPos[1] = startX;
+
+        //    //x = 50;
+        //    //y = 50;
+        //    //objPos = Position.Right;
+
+        //    //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //    testplain = new singleplain("plain1", 0, 90, 2);
+        //    testplain2 = new singleplain("plain2", 0, 18, 2);
+        //    testplain3 = new singleplain("plain3", 0, 27, 2);
+        //    testplain4 = new singleplain("plain4", 0, 0, 3);
+        //    plains.Add(testplain);
+        //    plains.Add(testplain2);
+        //    plains.Add(testplain3);
+        //    plains.Add(testplain4);
+        //}
 
         private void airField_Paint(object sender, PaintEventArgs e)
         {
@@ -191,153 +222,7 @@ namespace AirTrafficSimulation
             return boundaries;
         }
 
-        //private void takeOff(int rw)
-        //{
-        //    switch (rw)
-        //    {
-        //        case (90):
-        //            if (plainPos[0] == 30 && plainPos[1] <= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
-        //            {
-        //                plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
-        //                speed = takeoffSpeed;
-        //                objPos = Position.Right;
-        //                plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        //                takingOffOnRW = true;
-
-        //            }
-        //            break;
-        //        case (27):
-        //            if (plainPos[0] == taxiPosXR && plainPos[1] >= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
-        //            {
-        //                plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
-        //                speed = takeoffSpeed;
-        //                objPos = Position.Left;
-        //                plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        //                takingOffOnRW = true;
-
-        //            }
-        //            break;
-
-        //        case (18):
-        //            if ((plainPos[0] >= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == 30)
-        //            {
-        //                plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
-        //                speed = takeoffSpeed;
-        //                objPos = Position.Down;
-        //                plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-        //                takingOffOnRW = true;
-
-        //            }
-        //            break;
-
-        //        case (0):
-        //            if ((plainPos[0] <= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == taxiPosYL)
-        //            {
-        //                plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
-        //                speed = takeoffSpeed;
-        //                objPos = Position.Up;
-        //                plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-        //                takingOffOnRW = true;
-
-        //            }
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
-
-        //private void taxiPos()
-        //{
-        //    size = (runWayWidth / 10) * 5;
-        //    if ((objPos == Position.Right) && plainPos[0] >= taxiPosXR)
-        //    {
-        //        if (plainPos[1] >= taxiPosYU)
-        //        {
-        //            objPos = Position.Down;
-        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-
-        //        }
-        //        else
-        //        {
-        //            objPos = Position.Up;
-        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-
-        //        }
-        //        plainPos[0] = taxiPosXR;
-        //        if (rw == 27)
-        //        {
-        //            taxiing = false;
-        //            takingOff = true;
-        //        }
-        //    }
-
-        //    else if ((objPos == Position.Left) && plainPos[0] <= taxiPosXL)
-        //    {
-        //        if (plainPos[1] <= taxiPosYU)
-        //        {
-        //            objPos = Position.Down;
-        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-
-        //        }
-        //        else
-        //        {
-        //            objPos = Position.Up;
-        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-        //        }
-        //        plainPos[0] = taxiPosXL;
-        //        if (rw == 90)
-        //        {
-        //            taxiing = false;
-        //            takingOff = true;
-        //        }
-        //    }
-
-        //    else if ((objPos == Position.Down) && plainPos[1] >= taxiPosYL)
-        //    {
-        //        if (plainPos[0] == taxiPosXR)
-        //        {
-        //            objPos = Position.Left;
-        //            plainPos[1] = taxiPosYL;
-        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        //        }
-        //        else
-        //        {
-        //            objPos = Position.Right;
-        //            plainPos[1] = taxiPosYU;
-        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        //        }
-        //        plainPos[1] = taxiPosYL;
-        //        if (rw == 0)
-        //        {
-        //            taxiing = false;
-        //            takingOff = true;
-        //        }
-        //    }
-
-        //    else if ((objPos == Position.Up) && plainPos[1] <= taxiPosYU)
-        //    {
-        //        if (plainPos[0] == taxiPosXR)
-        //        {
-        //            objPos = Position.Left;
-        //            plainPos[0] = taxiPosXL;
-        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-        //        }
-        //        else
-        //        {
-        //            objPos = Position.Right;
-        //            plainPos[1] = taxiPosXR;
-        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-        //        }
-        //        plainPos[1] = taxiPosYU;
-        //        if (rw == 18)
-        //        {
-        //            taxiing = false;
-        //            takingOff = true;
-        //        }
-        //    }
-
-        //}
+       
 
         private void airField_Load_1(object sender, EventArgs e)
         {

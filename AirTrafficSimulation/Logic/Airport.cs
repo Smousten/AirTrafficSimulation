@@ -11,7 +11,7 @@ using dotSpace.Objects.Space;
 
 namespace AirTrafficSimulation
 {
-    class Airport
+    public class Airport
     {
         //private SpaceRepository airport;
         private SequentialSpace runWaySpace;
@@ -45,9 +45,9 @@ namespace AirTrafficSimulation
             this.noOfTaxiways = (int)setup[1];
             this.barrier = (int)setup[2];
             this.noOfPlanes = (int)setup[3];
-            this.airField = (AirField)setup[4];
-            this.realisticMode = (bool)setup[5];
-            this.windDirection = (int)setup[6];
+            //this.airField = (AirField)setup[4];
+            this.realisticMode = (bool)setup[4];
+            this.windDirection = (int)setup[5];
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
@@ -105,7 +105,9 @@ namespace AirTrafficSimulation
                     
                 }
             }
-            spawnAirplanes(airField);
+            //spawnAirplanes(airField);
+            spawnMultiplePlanes();
+
             //this.airport.AddSpace("Runways", runWaySpace);
             //this.airport.AddSpace("Runway Locks", runWayLockSpace);
             //this.airport.AddSpace("Taxiways", taxiWaySpace);
@@ -136,12 +138,43 @@ namespace AirTrafficSimulation
             return null;
         }
 
-        public void spawnAirplanes(AirField airField)
+        public void spawnplane(int dir, int counter)
+        {
+            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir);
+            (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+        }
+
+        public void spawnMultiplePlanes()
+        {
+            int dir ;
+            int counter = 1;
+
+            while (counter <= noOfPlanes)
+            {
+                if (windDirection == 0 || windDirection == 90)
+                {
+                    dir = 2;
+                    ITuple alpha = taxiWaySpace.Query("Taxiway", "Charlie", typeof(int), true);
+                    spawnplane(dir, counter);
+                }
+
+                else if (windDirection == 27 || windDirection == 18)
+                {
+                    dir = 3;
+                    ITuple alpha = taxiWaySpace.Query("Taxiway", "Beta", typeof(int), true);
+                    spawnplane(dir, counter);
+                }
+                
+                counter++;
+            }
+        }
+
+        public void spawnAirplanes(int dir)
         {
             int counter = 0;
             while (counter<noOfPlanes)
             {
-                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, airField, realisticMode, windDirection);
+                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, realisticMode, windDirection, dir);
                 //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
 
                 if (counter < noOfPlanes / 2)
