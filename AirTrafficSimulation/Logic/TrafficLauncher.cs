@@ -82,7 +82,7 @@ namespace AirTrafficSimulation
         private static readonly int noOfRunways = 2;
         private static readonly int noOfTaxiWays = 5;
         private static readonly int taxiWayCapacity = 3;
-        private static readonly int noOfPlanes = 2;
+        private static readonly int noOfPlanes = 1;
         private static bool realisticMode = true;
         private static int windDirection = 18;
         private Airport airport;

@@ -215,7 +215,7 @@ namespace AirTrafficSimulation
 
         private void runwayToTaxiway(string taxiway, ControlTower ct, ITuple frwT)
         {
-            updateGraphics(credentials, airspaceName, "" + frwT[0] + frwT[1]);
+             translator.allowGraphicalMovementOfPlaneToProgress(); //updateGraphics(credentials, airspaceName, "" + frwT[0] + frwT[1]);
             //runwaySpace.Get(runwayGUILock);
 
             Console.WriteLine(credentials + " is searching for free landing taxiway " + taxiway);
@@ -227,11 +227,12 @@ namespace AirTrafficSimulation
             //updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleTo[0] + freeTaxiWayTupleTo[1]);
             Console.WriteLine(credentials + " is putting free taxiway "+taxiway+" back with lower barrier " + barrierLimitA);
             taxiwaySpace.Put((string)freeTaxiWayTupleTo[0], freeTaxiWayTupleTo[1], barrierLimitA, (barrierLimitA) > 0);
-            //taxiwaySpace.Get(taxiwayGUILock);
+            taxiwaySpace.Get(taxiwayGUILock);
         }
 
         private void taxiwayToTaxiway(string fromTw, string toTw)
         {
+            translator.allowGraphicalMovementOfPlaneToProgress();
             Console.WriteLine(credentials + " is searching for used taxiway " + fromTw + ", to increase barrier...");
             ITuple freeTaxiWayTupleTo = taxiwaySpace.Get("Taxiway", toTw, typeof(int), true);
             ITuple usedTaxiWayTupleFrom = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
@@ -244,21 +245,24 @@ namespace AirTrafficSimulation
 
             Console.WriteLine(credentials + " is decreasing " + freeTaxiWayTupleTo[0] + " " + freeTaxiWayTupleTo[1] + "'s taxiway barrierLimit to " + barrierLimitB);
             taxiwaySpace.Put("Taxiway", toTw, barrierLimitB, (barrierLimitB > 0));
+            taxiwaySpace.Get(taxiwayGUILock);
         }
 
         private void taxiwayToHangar(string fromTw)
         {
+            translator.allowGraphicalMovementOfPlaneToProgress();
             Console.WriteLine(credentials + " is searching for used taxiway " + fromTw + ", to increase barrier...");
             ITuple usedTaxiWayTuple = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
             int usedbarrierLimit = (int)usedTaxiWayTuple[2] + 1;
             Console.WriteLine(credentials + " is increasing " + usedTaxiWayTuple[1] + "'s taxiway barrierLimit to " + usedbarrierLimit);
             taxiwaySpace.Put("Taxiway", usedTaxiWayTuple[1], usedbarrierLimit, (usedbarrierLimit) > 0);
             Console.WriteLine(credentials + " has safely arrived in the hangar!");
-            updateGraphics(credentials, "" + usedTaxiWayTuple[0] + usedTaxiWayTuple[1], hangarName);
+            //updateGraphics(credentials, "" + usedTaxiWayTuple[0] + usedTaxiWayTuple[1], hangarName);
         }
         private void hangarToTaxiway(string taxiway)
         {
             // Leaving hangar, entering taxiway
+            translator.allowGraphicalMovementOfPlaneToProgress();
             Console.WriteLine(credentials + " is searching for free taxiway " + taxiway);
             ITuple freeTaxiWayTuple = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
             int barrierLimit = (int)freeTaxiWayTuple[2] - 1;
@@ -266,10 +270,12 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " found free take-off taxiway " + taxiway + " with barrier value " + (barrierLimit + 1) + " and getting free taxiway tuple...");       
             Console.WriteLine(credentials + " is putting free taxiway " + taxiway + " back with new barrier " + barrierLimit);
             taxiwaySpace.Put((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit, barrierLimit > 0);
+            taxiwaySpace.Get(taxiwayGUILock);
         }
         private void taxiwayToRunway(string taxiway, ITuple frwL, ControlTower ct, string mode)
         {
             //Make space on the taxiway you just left
+            translator.allowGraphicalMovementOfPlaneToProgress();
             if (mode == "realistic")
             {
                 ct.getRunway(credentials, frwL);
@@ -284,8 +290,10 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " has safely left the taxiway!");
 
             //Leave the runway
+            taxiwaySpace.Get(taxiwayGUILock);
             Console.WriteLine(credentials + " got takeoff clearance with ID " + frwL[0] + frwL[1] + " and left the airport!");
             ct.putRunway(credentials, frwL);
+            translator.allowGraphicalMovementOfPlaneToProgress();
             //Airspace step
 
         }
@@ -388,9 +396,9 @@ namespace AirTrafficSimulation
             }
         }
 
-        private void updateGraphics(string planeCredentials, string currentLocationIdentifier, string nextLocationIdentifier)
-        {
-           // translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, airspaceName);
-        }
+        //private void updateGraphics(string planeCredentials, string currentLocationIdentifier, string nextLocationIdentifier)
+        //{
+        //   // translator.updateGraphicalPosition(planeCredentials, currentLocationIdentifier, airspaceName);
+        //}
     }
 }

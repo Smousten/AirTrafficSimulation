@@ -28,6 +28,9 @@ namespace AirTrafficSimulation
 
         private int taxiPosXL, taxiPosXR, taxiPosYU, taxiPosYL;
 
+        private int stopRW0right, stopRW0left, stopRW90up, stopRW90down, endvertical, endhorizontal;
+
+
         private int startX, startY;
 
         private int[] plainPos = new int[] { 0, 0 };
@@ -39,13 +42,13 @@ namespace AirTrafficSimulation
 
         private static int[] boundaries;
         
-        List<singleplain> plains = new List<singleplain>();
+        List<singlePlane> plains = new List<singlePlane>();
 
 
         private Bitmap plane;
 
-        singleplain testplain;
-        singleplain testplain2 , testplain3, testplain4;
+        singlePlane testplain;
+        singlePlane testplain2 , testplain3, testplain4;
 
 
         private Airport ap;
@@ -70,6 +73,7 @@ namespace AirTrafficSimulation
             rw = 90;
             speed = taxiSpeed;
             this.plane = new Bitmap("airplane.png");
+           
 
             //plainPos[0] = plainPos[1] = startX;
 
@@ -123,7 +127,7 @@ namespace AirTrafficSimulation
        
         private void airField_Paint(object sender, PaintEventArgs e)
         {
-
+            this.size = (runWayWidth / 10) * 5;
             halfformHeight = (this.Height / 2);
             halfformWidth = (this.Width / 2);
             runWayLength = (this.Width * 79) / 100;
@@ -138,7 +142,17 @@ namespace AirTrafficSimulation
             taxiPosXL = taxiPosYU = startX;
             taxiPosXR = 30 + runWayLength - (taxiWidth);
             taxiPosYL = (this.Height - 30 - taxiWidth);
-            boundaries = new int[] { taxiPosXL, taxiPosXR, taxiPosYL, taxiPosYU };
+            stopRW0left = halfformWidth - (halfformWidth / 5) - size;
+            stopRW0right = halfformWidth - (halfformWidth / 5) + runWayWidth;
+            stopRW90down = halfformHeight - (halfformHeight / 5) + runWayWidth;
+            stopRW90up = halfformHeight - (halfformHeight / 5) - size;
+            endvertical = this.Height;
+            endhorizontal = this.Width;
+
+
+
+
+            boundaries = new int[] { taxiPosXL, taxiPosXR, taxiPosYL, taxiPosYU, stopRW0left, stopRW0right, stopRW90down, stopRW90up, endvertical, endhorizontal };
 
 
 
@@ -234,13 +248,16 @@ namespace AirTrafficSimulation
             this.Size = new Size(w, h);
         }
 
-        private void tmrMove_Tick(object sender, EventArgs e)
+        private void tmrMove_Tick(object sender, EventArgs e)              //TIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIMER
         {
             //var space = ap.getSpace("airplane");
             //var airplanes = space.QueryAll(typeof(Airplane));
             foreach (var prop in ap.getSpace("airplane").QueryAll(typeof(Airplane)))//airplanes)
             {
-                ((Airplane)prop[0]).getTrans().getSingleplain().updatePosition();
+                if (((Airplane)prop[0]).getTrans().getSingleplain().getAnimationdone())
+                    ap.getSpace("airplane").Get((Airplane)prop[0]);
+                else
+                    ((Airplane)prop[0]).getTrans().getSingleplain().updatePosition();
                 
             }
 
@@ -326,15 +343,16 @@ namespace AirTrafficSimulation
 
     }
 
-    public class singleplain
+    public class singlePlane
     {
-        private String name;
+        private Controller.Translator translator;
+        private string name;
         private int size, x, y;
         private int runwayLength, runwayLength2, runwayWidth, rw, taxiSpeed, takeoffSpeed, speed;
         private int[] boundaries;
         
 
-        private bool takingOff, taxiing, takingOffOnRW;
+        private bool takingOff, taxiing, takingOffOnRW, canMove, hasLock, animationdone;
 
         private Bitmap plane = new Bitmap("airplane.png");
 
@@ -347,10 +365,9 @@ namespace AirTrafficSimulation
             Left, Right, Up, Down
         }
 
-        
-
-        public singleplain(String name, int size, int rw , int direction, int startx, int starty)
+        public singlePlane(String name, int size, int rw , int direction, int startx, int starty, Controller.Translator trans)
         {
+            this.translator = trans;
             this.name = name;
             this.size = size;
             this.x = startx;
@@ -358,8 +375,10 @@ namespace AirTrafficSimulation
             this.runwayLength = AirField.getRunwayL(1);
             this.runwayLength2 = AirField.getRunwayL(2);
             this.runwayWidth = AirField.getRunwayW();
-            
-            
+            this.canMove = true;
+            this.hasLock = false;
+            this.animationdone = false;
+
             this.takingOff = false;
             this.taxiing = true;
             this.takingOffOnRW = false;
@@ -394,49 +413,110 @@ namespace AirTrafficSimulation
 
             //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
         }
+        public void isAtstopPoint()
+        {
+            if (this.y == this.boundaries[2] || this.y == boundaries[3])
+            {
+                if ((this.x <= this.boundaries[5] && this.objPos == Position.Left) || (this.x >= this.boundaries[4] && this.objPos == Position.Right))
+                {
+                    //this.canMove = false;
+                    setCanMove(false);
+                }
+                //} else if (this.x >= this.boundaries[4] && this.objPos == Position.Right)
+                //{
+                //    this.canMove = false;
+                //}
+            }
+            else if (this.x == boundaries[0] || this.x == boundaries[1])
+            {
+                if ((this.y <= this.boundaries[6] && this.objPos == Position.Up) || (this.y >= this.boundaries[7] && this.objPos == Position.Down))
+                {
+                    //this.canMove = false;
+                    setCanMove(false);
+                }
+            }
+        }
+
+        public void setCanMove(bool flag)
+        {
+            this.canMove = flag;
+            if (!flag)
+            {
+                translator.allowLogicalMovementOfPlaneToProgress();
+            }
+        }
+
+        public void setHasLock(bool moveLock)
+        {
+            this.hasLock = moveLock;
+        }
+
+        public bool getCanmove()
+        {
+            return this.canMove;
+        }
+
+        public bool getAnimationdone()
+        {
+            return this.animationdone;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public String getRWreq()
+        {
+            if (this.y == this.boundaries[2] && (this.x == this.boundaries[6] || this.x == this.boundaries[5])) return "0";
+            return "";
+        }
+
 
         public void updatePosition()
         {
-            //if (objPos == Position.Right) return 1;
-            //if (objPos == Position.Left) return 2;
-            //if (objPos == Position.Up) return 3;
-            //if (objPos == Position.Down) return 4;
-            // div with 100 for taxi and div with 15 for takeoff
-            if (objPos == Position.Right)
-            {
-                //plainPos[0] += halfformWidth / speed;
-                this.x += AirField.getHalfformWidth() / this.speed;
-            }
-            else if (objPos == Position.Left)
-            {
-                //plainPos[0] -= halfformWidth / speed; //take off and landing speed
-                this.x -= AirField.getHalfformWidth() / this.speed;
-            }
-            else if (objPos == Position.Up)
-            {
-                //plainPos[1] -= halfformHeight / speed; // taxi speed
-                this.y -= AirField.getHalfformHeight() / this.speed;
-            }
-            else if (objPos == Position.Down)
-            {
-                //plainPos[1] += halfformHeight / speed;
-                this.y += AirField.getHalfformHeight() / this.speed;
-            }
-
-
-            //this.x += newx;
-            //this.y += newy;
-            if (taxiing) taxiPos();
-            if (takingOff) takeOff(this.rw);
-
-            if (takingOffOnRW)
-            {
-                if (rw == 90 && this.x > (30 + AirField.getRunwayL(1)/ 2)) size += 10;
-                if (rw == 27 && this.x < (30 + AirField.getRunwayL(1) / 2)) size += 10;
-                if (rw == 18 && this.y > (30 + AirField.getRunwayL(2) / 2)) size += 10;
-                if (rw == 0 && this.y < (30 + AirField.getRunwayL(2) / 2)) size += 10;
-            }
+            this.boundaries = AirField.getBoundaries();
+            if (this.x < 0 || this.y < 0 || this.x > this.boundaries[9] || this.y > this.boundaries[8]) animationdone = true;
             
+            isAtstopPoint();
+            
+            if ((canMove || hasLock) && !animationdone)
+            {
+                if (objPos == Position.Right)
+                {
+                    //plainPos[0] += halfformWidth / speed;
+                    this.x += AirField.getHalfformWidth() / this.speed;
+                }
+                else if (objPos == Position.Left)
+                {
+                    //plainPos[0] -= halfformWidth / speed; //take off and landing speed
+                    this.x -= AirField.getHalfformWidth() / this.speed;
+                }
+                else if (objPos == Position.Up)
+                {
+                    //plainPos[1] -= halfformHeight / speed; // taxi speed
+                    this.y -= AirField.getHalfformHeight() / this.speed;
+                }
+                else if (objPos == Position.Down)
+                {
+                    //plainPos[1] += halfformHeight / speed;
+                    this.y += AirField.getHalfformHeight() / this.speed;
+                }
+                
+
+                //this.x += newx;
+                //this.y += newy;
+                if (taxiing) taxiPos();
+                if (takingOff) takeOff(this.rw);
+
+                if (takingOffOnRW)
+                {
+                    if (rw == 90 && this.x > (30 + AirField.getRunwayL(1) / 2)) size += 10;
+                    if (rw == 27 && this.x < (30 + AirField.getRunwayL(1) / 2)) size += 10;
+                    if (rw == 18 && this.y > (30 + AirField.getRunwayL(2) / 2)) size += 10;
+                    if (rw == 0 && this.y < (30 + AirField.getRunwayL(2) / 2)) size += 10;
+                }
+            }
         }
 
         public Bitmap getImg()
@@ -471,7 +551,7 @@ namespace AirTrafficSimulation
         private void taxiPos()
         {
             
-            this.boundaries = AirField.getBoundaries();
+            //this.boundaries = AirField.getBoundaries();
             this.size = (AirField.getRunwayW() / 10) * 5;
             this.speed = this.taxiSpeed;
             if ((this.objPos == Position.Right) && this.x >= this.boundaries[1])
