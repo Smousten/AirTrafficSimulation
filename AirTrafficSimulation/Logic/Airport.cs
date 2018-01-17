@@ -86,7 +86,7 @@ namespace AirTrafficSimulation
                     }
                     else
                     {
-                        this.taxiWaySpace.Put("Taxiway", "Epsilon", barrier, barrier > 0);
+                        this.taxiWaySpace.Put("Taxiway", "Echo", barrier, barrier > 0);
                     }
                     noOfTaxiways--;
                 }
