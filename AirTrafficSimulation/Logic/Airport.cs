@@ -29,7 +29,7 @@ namespace AirTrafficSimulation
 
         public bool realisticMode;
         public int windDirection;
-
+        
 
         public Airport(ITuple setup)//, int noOfHangers, int noOfControlTowers) 
         {
@@ -45,9 +45,9 @@ namespace AirTrafficSimulation
             this.noOfTaxiways = (int)setup[1];
             this.barrier = (int)setup[2];
             this.noOfPlanes = (int)setup[3];
-            //this.airField = (AirField)setup[4];
-            this.realisticMode = (bool)setup[4];
-            this.windDirection = (int)setup[5];
+            this.airField = (AirField)setup[4];
+            this.realisticMode = (bool)setup[5];
+            this.windDirection = (int)setup[6];
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
@@ -140,8 +140,9 @@ namespace AirTrafficSimulation
 
         public void spawnplane(int dir, int counter)
         {
-            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir);
+            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir, 30,30 );
             (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+            airplaneSpace.Put(airplane);
         }
 
         public void spawnMultiplePlanes()
@@ -151,17 +152,18 @@ namespace AirTrafficSimulation
 
             while (counter <= noOfPlanes)
             {
+                if (counter == 2) windDirection = 0;
                 if (windDirection == 0 || windDirection == 90)
                 {
                     dir = 2;
-                    ITuple alpha = taxiWaySpace.Query("Taxiway", "Charlie", typeof(int), true);
+                    //ITuple alpha = taxiWaySpace.Query("Taxiway", "Charlie", typeof(int), true);
                     spawnplane(dir, counter);
                 }
 
                 else if (windDirection == 27 || windDirection == 18)
                 {
                     dir = 3;
-                    ITuple alpha = taxiWaySpace.Query("Taxiway", "Beta", typeof(int), true);
+                    //ITuple alpha = taxiWaySpace.Query("Taxiway", "Beta", typeof(int), true);
                     spawnplane(dir, counter);
                 }
                 
@@ -169,29 +171,29 @@ namespace AirTrafficSimulation
             }
         }
 
-        public void spawnAirplanes(int dir)
-        {
-            int counter = 0;
-            while (counter<noOfPlanes)
-            {
-                Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, realisticMode, windDirection, dir);
-                //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+        //public void spawnAirplanes(int dir)
+        //{
+        //    int counter = 0;
+        //    while (counter<noOfPlanes)
+        //    {
+        //        Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "" + counter, realisticMode, windDirection, dir);
+        //        //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
 
-                if (counter < noOfPlanes / 2)
-                {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
-                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Airspace")))).Start();
-                }
-                else
-                {
-                    (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
-                    //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Hangar")))).Start();
-                }
+        //        if (counter < noOfPlanes / 2)
+        //        {
+        //            (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
+        //            //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Airspace")))).Start();
+        //        }
+        //        else
+        //        {
+        //            (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.landing()))).Start();
+        //            //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.flyEternally("Hangar")))).Start();
+        //        }
 
-                counter++;
-            }
+        //        counter++;
+        //    }
 
-        }
+        //}
         
 
         public void printElements()

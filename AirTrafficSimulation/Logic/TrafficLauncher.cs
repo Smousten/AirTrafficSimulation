@@ -10,14 +10,17 @@ using dotSpace.Objects.Space;
 
 namespace AirTrafficSimulation
 {
-    static class TrafficLauncher
+     class TrafficLauncher
     {
-        private static readonly int noOfRunways = 2;
-        private static readonly int noOfTaxiWays = 5;
-        private static readonly int taxiWayCapacity = 3;
-        private static readonly int noOfPlanes = 30;
-        private static bool realisticMode = true;
-        private static int windDirection = 18;
+        //private static readonly int noOfRunways = 2;
+        //private static readonly int noOfTaxiWays = 5;
+        //private static readonly int taxiWayCapacity = 3;
+        //private static readonly int noOfPlanes = 5;
+        //private static bool realisticMode = true;
+        //private static int windDirection = 18;
+
+
+        
 
         /// <summary>
         /// The main entry point for the application.
@@ -34,27 +37,30 @@ namespace AirTrafficSimulation
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            prepGraphics prepg = new prepGraphics();
-            (new System.Threading.Thread(new System.Threading.ThreadStart(() => prepg.run()))).Start();
+            
             prepAirport prepa = new prepAirport();
             (new System.Threading.Thread(new System.Threading.ThreadStart(() => prepa.run()))).Start();
+            prepGraphics prepg = new prepGraphics(prepa.getAp());
+            (new System.Threading.Thread(new System.Threading.ThreadStart(() => prepg.run()))).Start();
 
 
             //ITuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays, taxiWayCapacity, noOfPlanes, /*airfield,*/ realisticMode, windDirection);
             //Airport airport = new Airport(setupTuple);
-            Application.Run(prepg.getAirfield());
+            Application.Run(prepGraphics.getAirfield());
             //airport.printElements();
             //Console.Read();
         }
+
+        
     }
 
     public class prepGraphics
     {
-        private AirField airfield;
-        public prepGraphics()
+        private static AirField airfield;
+        public prepGraphics(Airport ap)
         {
             
-            this.airfield =  new AirField();
+            airfield =  new AirField(ap);
             //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airfield.run()))).Start();
 
             
@@ -65,9 +71,9 @@ namespace AirTrafficSimulation
             
         }
 
-        public AirField getAirfield()
+        public static AirField getAirfield()
         {
-            return this.airfield;
+            return airfield;
         }
     }
 
@@ -76,13 +82,13 @@ namespace AirTrafficSimulation
         private static readonly int noOfRunways = 2;
         private static readonly int noOfTaxiWays = 5;
         private static readonly int taxiWayCapacity = 3;
-        private static readonly int noOfPlanes = 30;
+        private static readonly int noOfPlanes = 2;
         private static bool realisticMode = true;
         private static int windDirection = 18;
         private Airport airport;
         public prepAirport()
         {
-            ITuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays, taxiWayCapacity, noOfPlanes, /*airfield,*/ realisticMode, windDirection);
+            ITuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays, taxiWayCapacity, noOfPlanes, prepGraphics.getAirfield(), realisticMode, windDirection);
             //Airport airport = new Airport(setupTuple);
             this.airport = new Airport(setupTuple);
             //(new System.Threading.Thread(new System.Threading.ThreadStart(() => airfield.run()))).Start();

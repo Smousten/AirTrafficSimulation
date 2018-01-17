@@ -31,7 +31,7 @@ namespace AirTrafficSimulation
         private int windDirection;
         private bool realisticmode;
 
-        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, bool realisticMode, int windDirection, int dir) //SpaceRepository airportRepository)
+        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, bool realisticMode, int windDirection, int dir, int startx, int starty) //SpaceRepository airportRepository)
         {
             //this.airport = airportRepository;
             this.controlTowerSpace = CTSpace;
@@ -41,12 +41,18 @@ namespace AirTrafficSimulation
             this.runwayGUILock = credentials + "Runway" + "-lock";
             this.taxiwayGUILock = credentials + "Taxiway" + "-lock";
 
-            this.translator = new Controller.Translator(rwSpace, twSpace, credentials, windDirection, dir);
+            this.translator = new Controller.Translator(rwSpace, twSpace, credentials, windDirection, dir, startx, starty);
 
             this.windDirection = windDirection;
             this.realisticmode = realisticMode;
 
         }
+
+        public Controller.Translator getTrans()
+        {
+            return this.translator;
+        }
+
         public void flyEternally(string startingLocation)
         {
             while (true)

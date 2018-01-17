@@ -15,12 +15,18 @@ namespace AirTrafficSimulation.Controller
         private singleplain singleplain;
 
 
-        public Translator(SequentialSpace runways, SequentialSpace taxiways, String planename, int rw, int dir)
+        public Translator(SequentialSpace runways, SequentialSpace taxiways, String planename, int rw, int dir, int startx, int starty)
         {
             this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
-            this.singleplain = new singleplain(planename, 0, rw, dir);
+            this.singleplain = new singleplain(planename, 0, rw, dir, startx, starty);
         }
+
+        public singleplain getSingleplain()
+        {
+            return this.singleplain;
+        }
+
         //Fire-and-forget method, to update the GUI
         public void updateGraphicalPosition()
         {
