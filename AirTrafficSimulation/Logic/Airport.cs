@@ -28,7 +28,7 @@ namespace AirTrafficSimulation
         private AirField airField;
 
         public bool realisticMode;
-        public string windDirection;
+        public int windDirection;
 
 
         public Airport(ITuple setup)//, int noOfHangers, int noOfControlTowers) 
@@ -47,7 +47,7 @@ namespace AirTrafficSimulation
             this.noOfPlanes = (int)setup[3];
             this.airField = (AirField)setup[4];
             this.realisticMode = (bool)setup[5];
-            this.windDirection = (string)setup[6];
+            this.windDirection = (int)setup[6];
             //this.noOfHangers = noOfHangers;
             //this.noOfControlTowers = noOfControlTowers;
             while(noOfRunways > 0 || noOfTaxiways > 0)//|| noOfHangers > 0)
