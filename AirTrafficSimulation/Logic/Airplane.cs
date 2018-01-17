@@ -210,7 +210,7 @@ namespace AirTrafficSimulation
         private void runwayToTaxiway(string taxiway, ControlTower ct, ITuple frwT)
         {
             updateGraphics(credentials, airspaceName, "" + frwT[0] + frwT[1]);
-            //runwaySpace.Get(runwayGUILock);
+            runwaySpace.Get(runwayGUILock);
 
             Console.WriteLine(credentials + " is searching for free landing taxiway " + taxiway);
             ITuple freeTaxiWayTupleTo = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), true);
@@ -221,8 +221,7 @@ namespace AirTrafficSimulation
             updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleTo[0] + freeTaxiWayTupleTo[1]);
             Console.WriteLine(credentials + " is putting free taxiway "+taxiway+" back with lower barrier " + barrierLimitA);
             taxiwaySpace.Put((string)freeTaxiWayTupleTo[0], freeTaxiWayTupleTo[1], barrierLimitA, (barrierLimitA) > 0);
-            //taxiwaySpace.Get(taxiwayGUILock);
-            //System.Threading.Thread.Sleep(2500);
+            taxiwaySpace.Get(taxiwayGUILock);
         }
 
         private void taxiwayToTaxiway(string fromTw, string toTw)
@@ -230,6 +229,7 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " is searching for used taxiway " + fromTw + ", to increase barrier...");
             ITuple freeTaxiWayTupleTo = taxiwaySpace.Get("Taxiway", toTw, typeof(int), true);
             ITuple usedTaxiWayTupleFrom = taxiwaySpace.Get("Taxiway", fromTw, typeof(int), typeof(bool));
+
             int usedbarrierLimitA = (int)usedTaxiWayTupleFrom[2] + 1;
             Console.WriteLine(credentials + " is increasing " + usedTaxiWayTupleFrom[0] + " " + usedTaxiWayTupleFrom[1] + "'s taxiway barrierLimit to " + usedbarrierLimitA);
             taxiwaySpace.Put("Taxiway", fromTw, usedbarrierLimitA, (usedbarrierLimitA > 0));
