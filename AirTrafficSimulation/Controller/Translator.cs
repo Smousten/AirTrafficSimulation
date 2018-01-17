@@ -12,19 +12,20 @@ namespace AirTrafficSimulation.Controller
     {
         private SequentialSpace runwaySpace;
         private SequentialSpace taxiwaySpace;
-        private AirField airField;
+        private singleplain singleplain;
 
 
-        public Translator(SequentialSpace runways, SequentialSpace taxiways, AirField airField)
+        public Translator(SequentialSpace runways, SequentialSpace taxiways, String planename, int rw, int dir)
         {
             this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
-            this.airField = airField;
+            this.singleplain = new singleplain(planename, 0, rw, dir);
         }
         //Fire-and-forget method, to update the GUI
-        public void updateGraphicalPosition(string credentials, string previousLocation, string nextLocation)
+        public void updateGraphicalPosition()
         {
-            dotSpace.Objects.Space.Tuple releventDataTuple = new dotSpace.Objects.Space.Tuple(credentials, previousLocation, nextLocation);
+
+            //dotSpace.Objects.Space.Tuple releventDataTuple = new dotSpace.Objects.Space.Tuple(credentials, previousLocation, nextLocation);
             //Tell graphics the input information, so we can draw it
         }
         //Fire-and-forget method, to allow the logic to progress

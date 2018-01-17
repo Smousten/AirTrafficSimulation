@@ -76,10 +76,10 @@ namespace AirTrafficSimulation
             //objPos = Position.Right;
 
             //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-            testplain = new singleplain("plain1", size, 30, 30, 90, 1);
-            testplain2 = new singleplain("plain2", size, 30, 30, 18, 4);
-            testplain3 = new singleplain("plain3", size, 30, 30, 27, 1);
-            testplain4 = new singleplain("plain4", size, 30, 30, 0, 4);
+            testplain = new singleplain("plain1", 0,  90, 2);
+            testplain2 = new singleplain("plain2", 0, 18, 2);
+            testplain3 = new singleplain("plain3", 0, 27, 2);
+            testplain4 = new singleplain("plain4", 0, 0, 3);
             plains.Add(testplain);
             plains.Add(testplain2);
             plains.Add(testplain3);
@@ -124,7 +124,7 @@ namespace AirTrafficSimulation
             e.Graphics.FillRectangle(Brushes.SlateGray, 30, halfformHeight - (halfformHeight / 5), runWayLength, runWayWidth);
 
 
-
+            //zebras
             for (int i = 2; i < 11; i++)
             {
                 e.Graphics.FillRectangle(Brushes.White, i * 100, halfformHeight - (halfformHeight / 5) + (halfformWidth / 10), halfformWidth / 12, halfformWidth / 100);
@@ -151,18 +151,8 @@ namespace AirTrafficSimulation
                 e.Graphics.FillRectangle(Brushes.White, halfformWidth - ((1 + i) * linespace + 10), (this.Height - 50 - zebraLength), zebraWidth, zebraLength);
             }
 
-            //if (taxiing) taxiPos();
-            //if (takingOff) takeOff(rw);
-
-            //if (takingOffOnRW)
-            //{
-            //    if (rw == 90 && plainPos[0] > (30 + runWayLength / 2)) size += 10;
-            //    if (rw == 27 && plainPos[0] < (30 + runWayLength / 2)) size += 10;
-            //    if (rw == 18 && plainPos[1] > (30 + runWayLength2 / 2)) size += 10;
-            //    if (rw == 0 && plainPos[1] < (30 + runWayLength2 / 2)) size += 10;
-            //}
-
-            airPlane(e, testplain.getImg());
+            
+            airPlane(e);
 
 
             // Hangar where planes go to die :D
@@ -361,27 +351,28 @@ namespace AirTrafficSimulation
         {
             foreach (singleplain prop in plains)
             {
-                // div with 100 for taxi and div with 15 for takeoff
-                if (prop.getObjPos() == 1)
-                {
-                    //plainPos[0] += halfformWidth / speed;
-                    prop.updatePosition(halfformWidth / prop.getSpeed(), 0);
-                }
-                else if (prop.getObjPos() == 2)
-                {
-                    //plainPos[0] -= halfformWidth / speed; //take off and landing speed
-                    prop.updatePosition(-(halfformWidth / prop.getSpeed()), 0);
-                }
-                else if (prop.getObjPos() == 3)
-                {
-                    //plainPos[1] -= halfformHeight / speed; // taxi speed
-                    prop.updatePosition(0, -(halfformHeight / prop.getSpeed()));
-                }
-                else if (prop.getObjPos() == 4)
-                {
-                    //plainPos[1] += halfformHeight / speed;
-                    prop.updatePosition(0, halfformHeight / prop.getSpeed());
-                }
+                prop.updatePosition();
+                //// div with 100 for taxi and div with 15 for takeoff
+                //if (prop.getObjPos() == 1)
+                //{
+                //    //plainPos[0] += halfformWidth / speed;
+                //    prop.updatePosition(halfformWidth / prop.getSpeed(), 0);
+                //}
+                //else if (prop.getObjPos() == 2)
+                //{
+                //    //plainPos[0] -= halfformWidth / speed; //take off and landing speed
+                //    prop.updatePosition(-(halfformWidth / prop.getSpeed()), 0);
+                //}
+                //else if (prop.getObjPos() == 3)
+                //{
+                //    //plainPos[1] -= halfformHeight / speed; // taxi speed
+                //    prop.updatePosition(0, -(halfformHeight / prop.getSpeed()));
+                //}
+                //else if (prop.getObjPos() == 4)
+                //{
+                //    //plainPos[1] += halfformHeight / speed;
+                //    prop.updatePosition(0, halfformHeight / prop.getSpeed());
+                //}
             }
 
             Invalidate();
@@ -395,13 +386,23 @@ namespace AirTrafficSimulation
             else if (e.KeyCode == Keys.Down) objPos = Position.Down;
         }
 
-        private void airPlane(PaintEventArgs e, Bitmap plane)
+        private void airPlane(PaintEventArgs e)
         {
             foreach (singleplain prop in plains)
             {
                 e.Graphics.DrawImage(prop.getImg(), prop.getPos(0), prop.getPos(1), prop.getSize(), prop.getSize());
             }
            // e.Graphics.DrawImage(plane, testplain.getPos(0), testplain.getPos(1), testplain.getSize(), testplain.getSize());
+        }
+
+        public static int getHangarX()
+        {
+            return taxiPosXR;
+        }
+
+        public static int getHangarY()
+        {
+            return taxiPosYL;
         }
 
         public bool isOnRunway(int x, int y)
@@ -449,12 +450,12 @@ namespace AirTrafficSimulation
             Left, Right, Up, Down
         }
 
-        public singleplain(String name, int size, int x, int y, int rw , int direction)
+        public singleplain(String name, int size, int rw , int direction)
         {
             this.name = name;
             this.size = size;
-            this.x = x;
-            this.y = y;
+            this.x = AirField.getHangarX();
+            this.y = AirField.getHangarY();
             this.runwayLength = AirField.getRunwayL(1);
             this.runwayLength2 = AirField.getRunwayL(2);
             this.runwayWidth = AirField.getRunwayW();
@@ -495,10 +496,37 @@ namespace AirTrafficSimulation
             //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
         }
 
-        public void updatePosition(int newx, int newy)
+        public void updatePosition()
         {
-            this.x += newx;
-            this.y += newy;
+            //if (objPos == Position.Right) return 1;
+            //if (objPos == Position.Left) return 2;
+            //if (objPos == Position.Up) return 3;
+            //if (objPos == Position.Down) return 4;
+            // div with 100 for taxi and div with 15 for takeoff
+            if (objPos == Position.Right)
+            {
+                //plainPos[0] += halfformWidth / speed;
+                this.x += AirField.getHalfformWidth() / this.speed;
+            }
+            else if (objPos == Position.Left)
+            {
+                //plainPos[0] -= halfformWidth / speed; //take off and landing speed
+                this.x -= AirField.getHalfformWidth() / this.speed;
+            }
+            else if (objPos == Position.Up)
+            {
+                //plainPos[1] -= halfformHeight / speed; // taxi speed
+                this.y -= AirField.getHalfformHeight() / this.speed;
+            }
+            else if (objPos == Position.Down)
+            {
+                //plainPos[1] += halfformHeight / speed;
+                this.y += AirField.getHalfformHeight() / this.speed;
+            }
+
+
+            //this.x += newx;
+            //this.y += newy;
             if (taxiing) taxiPos();
             if (takingOff) takeOff(this.rw);
 
