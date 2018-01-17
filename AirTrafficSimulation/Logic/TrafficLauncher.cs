@@ -25,10 +25,10 @@ namespace AirTrafficSimulation
         [STAThread]
         static void Main()
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             AirField airfield = new AirField();
-            //Application.Run(airfield);
+            Application.Run(airfield);
             ITuple setupTuple = new dotSpace.Objects.Space.Tuple(noOfRunways, noOfTaxiWays,taxiWayCapacity, noOfPlanes, airfield, realisticMode, windDirection);
             Airport airport = new Airport(setupTuple);
 

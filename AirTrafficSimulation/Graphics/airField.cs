@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotSpace.Interfaces.Space;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,18 +14,18 @@ namespace AirTrafficSimulation
 {
     public partial class AirField : Form
     {
-        private PictureBox picbox;
 
         private int x;
         private int y;
         private int size;
         private Position objPos;
 
-        private int halfformHeight, halfformWidth;
+        private static int halfformHeight, halfformWidth;
         private int taxiWidth, taxiLength;
-        private int runWayLength, runWayWidth, zebraWidth, zebraLength, linespace, runWayLength2;
+        private int  zebraWidth, zebraLength, linespace;
+        private static int runWayLength, runWayLength2, runWayWidth;
 
-        private int taxiPosXL, taxiPosXR, taxiPosYU, taxiPosYL;
+        private static int taxiPosXL, taxiPosXR, taxiPosYU, taxiPosYL;
 
         private int startX, startY;
 
@@ -35,8 +36,18 @@ namespace AirTrafficSimulation
         private bool takingOff, taxiing, takingOffOnRW;
         private int rw;
 
+        private static int[] boundaries;
 
-        Bitmap plane = new Bitmap("airplane.png");
+
+        List<singleplain> plains = new List<singleplain>();
+
+
+        //private Bitmap plane = new Bitmap("airplane.png");
+
+        singleplain testplain;
+        singleplain testplain2 , testplain3, testplain4;
+
+       
 
 
         enum Position
@@ -58,13 +69,21 @@ namespace AirTrafficSimulation
             speed = taxiSpeed;
 
 
-            plainPos[0] = plainPos[1] = startX;
+            //plainPos[0] = plainPos[1] = startX;
 
-            x = 50;
-            y = 50;
-            objPos = Position.Right;
+            //x = 50;
+            //y = 50;
+            //objPos = Position.Right;
 
-            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+            //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+            testplain = new singleplain("plain1", size, 30, 30, 90, 1);
+            testplain2 = new singleplain("plain2", size, 30, 30, 18, 4);
+            testplain3 = new singleplain("plain3", size, 30, 30, 27, 1);
+            testplain4 = new singleplain("plain4", size, 30, 30, 0, 4);
+            plains.Add(testplain);
+            plains.Add(testplain2);
+            plains.Add(testplain3);
+            plains.Add(testplain4);
         }
 
         private void airField_Paint(object sender, PaintEventArgs e)
@@ -80,16 +99,13 @@ namespace AirTrafficSimulation
             zebraWidth = runWayWidth / 12;
             zebraLength = runWayLength / 10;
             linespace = (runWayWidth - runWayWidth / 12) / 7;
-
-
-
             taxiLength = runWayLength / 2;
             taxiWidth = runWayWidth / 2;
 
             taxiPosXL = taxiPosYU = startX;
             taxiPosXR = 30 + runWayLength - (taxiWidth);
             taxiPosYL = (this.Height - 30 - taxiWidth);
-
+            boundaries = new int[] { taxiPosXL, taxiPosXR, taxiPosYL, taxiPosYU };
 
 
 
@@ -135,173 +151,203 @@ namespace AirTrafficSimulation
                 e.Graphics.FillRectangle(Brushes.White, halfformWidth - ((1 + i) * linespace + 10), (this.Height - 50 - zebraLength), zebraWidth, zebraLength);
             }
 
-            if (taxiing) taxiPos();
-            if (takingOff) takeOff(rw);
+            //if (taxiing) taxiPos();
+            //if (takingOff) takeOff(rw);
 
-            if (takingOffOnRW)
-            {
-                if (rw == 90 && plainPos[0] > (30 + runWayLength / 2)) size += 10;
-                if (rw == 27 && plainPos[0] < (30 + runWayLength / 2)) size += 10;
-                if (rw == 18 && plainPos[1] > (30 + runWayLength2 / 2)) size += 10;
-                if (rw == 0 && plainPos[1] < (30 + runWayLength2 / 2)) size += 10;
-            }
+            //if (takingOffOnRW)
+            //{
+            //    if (rw == 90 && plainPos[0] > (30 + runWayLength / 2)) size += 10;
+            //    if (rw == 27 && plainPos[0] < (30 + runWayLength / 2)) size += 10;
+            //    if (rw == 18 && plainPos[1] > (30 + runWayLength2 / 2)) size += 10;
+            //    if (rw == 0 && plainPos[1] < (30 + runWayLength2 / 2)) size += 10;
+            //}
 
-            airPlane(e, plainPos[0], plainPos[1], size);
+            airPlane(e, testplain.getImg());
+
 
             // Hangar where planes go to die :D
 
             e.Graphics.FillRectangle(Brushes.DarkRed, 30 + runWayLength - (2 * taxiWidth) + taxiWidth / 2, (this.Height - 30 - taxiWidth - taxiWidth / 2), taxiWidth * 2, taxiWidth * 2);
 
 
+
+            
+
         }
 
-        private void takeOff(int rw)
+        public static int getHalfformWidth()
         {
-            switch (rw)
-            {
-                case (90):
-                    if (plainPos[0] == 30 && plainPos[1] <= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
-                    {
-                        plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
-                        speed = takeoffSpeed;
-                        objPos = Position.Right;
-                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-                        takingOffOnRW = true;
-
-                    }
-                    break;
-                case (27):
-                    if (plainPos[0] == taxiPosXR && plainPos[1] >= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
-                    {
-                        plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
-                        speed = takeoffSpeed;
-                        objPos = Position.Left;
-                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-                        takingOffOnRW = true;
-
-                    }
-                    break;
-
-                case (18):
-                    if ((plainPos[0] >= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == 30)
-                    {
-                        plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
-                        speed = takeoffSpeed;
-                        objPos = Position.Down;
-                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-                        takingOffOnRW = true;
-
-                    }
-                    break;
-
-                case (0):
-                    if ((plainPos[0] <= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == taxiPosYL)
-                    {
-                        plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
-                        speed = takeoffSpeed;
-                        objPos = Position.Up;
-                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-                        takingOffOnRW = true;
-
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            return halfformWidth;
         }
 
-        private void taxiPos()
+        public static int getHalfformHeight()
         {
-            size = (runWayWidth / 10) * 5;
-            if ((objPos == Position.Right) && plainPos[0] >= taxiPosXR)
-            {
-                if (plainPos[1] >= taxiPosYU)
-                {
-                    objPos = Position.Down;
-                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-
-                }
-                else
-                {
-                    objPos = Position.Up;
-                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-
-                }
-                plainPos[0] = taxiPosXR;
-                if (rw == 27)
-                {
-                    taxiing = false;
-                    takingOff = true;
-                }
-            }
-
-            else if ((objPos == Position.Left) && plainPos[0] <= taxiPosXL)
-            {
-                if (plainPos[1] <= taxiPosYU)
-                {
-                    objPos = Position.Down;
-                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-
-                }
-                else
-                {
-                    objPos = Position.Up;
-                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-                }
-                plainPos[0] = taxiPosXL;
-                if (rw == 90)
-                {
-                    taxiing = false;
-                    takingOff = true;
-                }
-            }
-
-            else if ((objPos == Position.Down) && plainPos[1] >= taxiPosYL)
-            {
-                if (plainPos[0] == taxiPosXR)
-                {
-                    objPos = Position.Left;
-                    plainPos[1] = taxiPosYL;
-                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-                }
-                else
-                {
-                    objPos = Position.Right;
-                    plainPos[1] = taxiPosYU;
-                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-                }
-                plainPos[1] = taxiPosYL;
-                if (rw == 0)
-                {
-                    taxiing = false;
-                    takingOff = true;
-                }
-            }
-
-            else if ((objPos == Position.Up) && plainPos[1] <= taxiPosYU)
-            {
-                if (plainPos[0] == taxiPosXR)
-                {
-                    objPos = Position.Left;
-                    plainPos[0] = taxiPosXL;
-                    plane.RotateFlip(RotateFlipType.Rotate90FlipX);
-                }
-                else
-                {
-                    objPos = Position.Right;
-                    plainPos[1] = taxiPosXR;
-                    plane.RotateFlip(RotateFlipType.Rotate270FlipX);
-                }
-                plainPos[1] = taxiPosYU;
-                if (rw == 18)
-                {
-                    taxiing = false;
-                    takingOff = true;
-                }
-            }
-
+            return halfformHeight;
         }
+
+        public static int getRunwayL(int w)
+        {
+            if (w == 1) return runWayLength;
+            return runWayLength2;
+        }
+
+        public static int getRunwayW()
+        {
+            return runWayWidth;
+        }
+
+        public static int[] getBoundaries()
+        {
+            return boundaries;
+        }
+
+        //private void takeOff(int rw)
+        //{
+        //    switch (rw)
+        //    {
+        //        case (90):
+        //            if (plainPos[0] == 30 && plainPos[1] <= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
+        //            {
+        //                plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
+        //                speed = takeoffSpeed;
+        //                objPos = Position.Right;
+        //                plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //                takingOffOnRW = true;
+
+        //            }
+        //            break;
+        //        case (27):
+        //            if (plainPos[0] == taxiPosXR && plainPos[1] >= (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10))
+        //            {
+        //                plainPos[1] = (halfformHeight - (halfformHeight / 5) + (runWayWidth / 4) + 10);
+        //                speed = takeoffSpeed;
+        //                objPos = Position.Left;
+        //                plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //                takingOffOnRW = true;
+
+        //            }
+        //            break;
+
+        //        case (18):
+        //            if ((plainPos[0] >= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == 30)
+        //            {
+        //                plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
+        //                speed = takeoffSpeed;
+        //                objPos = Position.Down;
+        //                plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+        //                takingOffOnRW = true;
+
+        //            }
+        //            break;
+
+        //        case (0):
+        //            if ((plainPos[0] <= (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10) && plainPos[1] == taxiPosYL)
+        //            {
+        //                plainPos[0] = (halfformWidth - (halfformWidth / 5)) + (runWayWidth / 4) + 10;
+        //                speed = takeoffSpeed;
+        //                objPos = Position.Up;
+        //                plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+        //                takingOffOnRW = true;
+
+        //            }
+        //            break;
+
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        //private void taxiPos()
+        //{
+        //    size = (runWayWidth / 10) * 5;
+        //    if ((objPos == Position.Right) && plainPos[0] >= taxiPosXR)
+        //    {
+        //        if (plainPos[1] >= taxiPosYU)
+        //        {
+        //            objPos = Position.Down;
+        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+
+        //        }
+        //        else
+        //        {
+        //            objPos = Position.Up;
+        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+        //        }
+        //        plainPos[0] = taxiPosXR;
+        //        if (rw == 27)
+        //        {
+        //            taxiing = false;
+        //            takingOff = true;
+        //        }
+        //    }
+
+        //    else if ((objPos == Position.Left) && plainPos[0] <= taxiPosXL)
+        //    {
+        //        if (plainPos[1] <= taxiPosYU)
+        //        {
+        //            objPos = Position.Down;
+        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+        //        }
+        //        else
+        //        {
+        //            objPos = Position.Up;
+        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+        //        }
+        //        plainPos[0] = taxiPosXL;
+        //        if (rw == 90)
+        //        {
+        //            taxiing = false;
+        //            takingOff = true;
+        //        }
+        //    }
+
+        //    else if ((objPos == Position.Down) && plainPos[1] >= taxiPosYL)
+        //    {
+        //        if (plainPos[0] == taxiPosXR)
+        //        {
+        //            objPos = Position.Left;
+        //            plainPos[1] = taxiPosYL;
+        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //        }
+        //        else
+        //        {
+        //            objPos = Position.Right;
+        //            plainPos[1] = taxiPosYU;
+        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //        }
+        //        plainPos[1] = taxiPosYL;
+        //        if (rw == 0)
+        //        {
+        //            taxiing = false;
+        //            takingOff = true;
+        //        }
+        //    }
+
+        //    else if ((objPos == Position.Up) && plainPos[1] <= taxiPosYU)
+        //    {
+        //        if (plainPos[0] == taxiPosXR)
+        //        {
+        //            objPos = Position.Left;
+        //            plainPos[0] = taxiPosXL;
+        //            plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+        //        }
+        //        else
+        //        {
+        //            objPos = Position.Right;
+        //            plainPos[1] = taxiPosXR;
+        //            plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        //        }
+        //        plainPos[1] = taxiPosYU;
+        //        if (rw == 18)
+        //        {
+        //            taxiing = false;
+        //            takingOff = true;
+        //        }
+        //    }
+
+        //}
 
         private void airField_Load_1(object sender, EventArgs e)
         {
@@ -313,23 +359,29 @@ namespace AirTrafficSimulation
 
         private void tmrMove_Tick(object sender, EventArgs e)
         {
-
-            // div with 100 for taxi and div with 15 for takeoff
-            if (objPos == Position.Right)
+            foreach (singleplain prop in plains)
             {
-                plainPos[0] += halfformWidth / speed;
-            }
-            else if (objPos == Position.Left)
-            {
-                plainPos[0] -= halfformWidth / speed; //take off and landing speed
-            }
-            else if (objPos == Position.Up)
-            {
-                plainPos[1] -= halfformHeight / speed; // taxi speed
-            }
-            else if (objPos == Position.Down)
-            {
-                plainPos[1] += halfformHeight / speed;
+                // div with 100 for taxi and div with 15 for takeoff
+                if (prop.getObjPos() == 1)
+                {
+                    //plainPos[0] += halfformWidth / speed;
+                    prop.updatePosition(halfformWidth / prop.getSpeed(), 0);
+                }
+                else if (prop.getObjPos() == 2)
+                {
+                    //plainPos[0] -= halfformWidth / speed; //take off and landing speed
+                    prop.updatePosition(-(halfformWidth / prop.getSpeed()), 0);
+                }
+                else if (prop.getObjPos() == 3)
+                {
+                    //plainPos[1] -= halfformHeight / speed; // taxi speed
+                    prop.updatePosition(0, -(halfformHeight / prop.getSpeed()));
+                }
+                else if (prop.getObjPos() == 4)
+                {
+                    //plainPos[1] += halfformHeight / speed;
+                    prop.updatePosition(0, halfformHeight / prop.getSpeed());
+                }
             }
 
             Invalidate();
@@ -343,10 +395,13 @@ namespace AirTrafficSimulation
             else if (e.KeyCode == Keys.Down) objPos = Position.Down;
         }
 
-        private void airPlane(PaintEventArgs e, int x, int y, int size)
+        private void airPlane(PaintEventArgs e, Bitmap plane)
         {
-
-            e.Graphics.DrawImage(plane, x, y, size, size);
+            foreach (singleplain prop in plains)
+            {
+                e.Graphics.DrawImage(prop.getImg(), prop.getPos(0), prop.getPos(1), prop.getSize(), prop.getSize());
+            }
+           // e.Graphics.DrawImage(plane, testplain.getPos(0), testplain.getPos(1), testplain.getSize(), testplain.getSize());
         }
 
         public bool isOnRunway(int x, int y)
@@ -372,4 +427,325 @@ namespace AirTrafficSimulation
 
 
     }
+
+    public class singleplain
+    {
+        private String name;
+        private int size, x, y;
+        private int runwayLength, runwayLength2, runwayWidth, rw, taxiSpeed, takeoffSpeed, speed;
+        private int[] boundaries;
+        
+
+        private bool takingOff, taxiing, takingOffOnRW;
+
+        private Bitmap plane = new Bitmap("airplane.png");
+
+        
+
+        private Position objPos;
+
+        enum Position
+        {
+            Left, Right, Up, Down
+        }
+
+        public singleplain(String name, int size, int x, int y, int rw , int direction)
+        {
+            this.name = name;
+            this.size = size;
+            this.x = x;
+            this.y = y;
+            this.runwayLength = AirField.getRunwayL(1);
+            this.runwayLength2 = AirField.getRunwayL(2);
+            this.runwayWidth = AirField.getRunwayW();
+            
+            
+            this.takingOff = false;
+            this.taxiing = true;
+            this.takingOffOnRW = false;
+            this.rw = rw;
+            this.taxiSpeed = 100/6;
+            this.takeoffSpeed = 15;
+            this.speed = taxiSpeed;
+
+            
+
+            if (direction == 1)
+            {
+                objPos = Position.Right;
+                //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+            }
+            else if (direction == 2)
+            {
+                objPos = Position.Left;
+                //plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+            }
+            else if (direction == 3)
+            {
+                objPos = Position.Up;
+                //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+            }
+            else if (direction == 4)
+            {
+                objPos = Position.Down;
+                //plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+            }
+
+
+            //plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+        }
+
+        public void updatePosition(int newx, int newy)
+        {
+            this.x += newx;
+            this.y += newy;
+            if (taxiing) taxiPos();
+            if (takingOff) takeOff(this.rw);
+
+            if (takingOffOnRW)
+            {
+                if (rw == 90 && this.x > (30 + AirField.getRunwayL(1)/ 2)) size += 10;
+                if (rw == 27 && this.x < (30 + AirField.getRunwayL(1) / 2)) size += 10;
+                if (rw == 18 && this.y > (30 + AirField.getRunwayL(2) / 2)) size += 10;
+                if (rw == 0 && this.y < (30 + AirField.getRunwayL(2) / 2)) size += 10;
+            }
+            
+        }
+
+        public Bitmap getImg()
+        {
+            Bitmap re = new Bitmap("airplane.png");
+            if (this.objPos == Position.Right) re.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            else if (this.objPos == Position.Down) re.RotateFlip(RotateFlipType.Rotate180FlipNone);
+            else if (this.objPos == Position.Left) re.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            return re;
+        }
+
+        public int getPos(int what)
+        {
+            if (what == 0) return this.x;
+            return this.y;
+        }
+
+        public int getObjPos()
+        {
+            if (objPos == Position.Right) return 1;
+            if (objPos == Position.Left) return 2;
+            if (objPos == Position.Up) return 3;
+            if (objPos == Position.Down) return 4;
+            return 0;
+        }
+
+        public int getSpeed()
+        {
+            return this.speed;
+        }
+
+        private void taxiPos()
+        {
+            
+            this.boundaries = AirField.getBoundaries();
+            this.size = (AirField.getRunwayW() / 10) * 5;
+            this.speed = this.taxiSpeed;
+            if ((this.objPos == Position.Right) && this.x >= this.boundaries[1])
+            {
+                if (this.y == boundaries[3])
+                {
+                    this.objPos = Position.Down;
+                    //this.plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+
+                }
+                else
+                {
+                    this.objPos = Position.Up;
+                    //this.plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+                }
+                this.x = this.boundaries[1];
+                if (rw == 27)
+                {
+                    this.taxiing = false;
+                    this.takingOff = true;
+                }
+            }
+
+            else if ((this.objPos == Position.Left) && this.x <= this.boundaries[0])
+            {
+                if (this.y == this.boundaries[3])
+                {
+                    this.objPos = Position.Down;
+                    
+                    //this.plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+
+                }
+                else
+                {
+                    this.objPos = Position.Up;
+                    //this.plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                }
+                this.x = this.boundaries[0];
+                if (rw == 90)
+                {
+                    this.taxiing = false;
+                    this.takingOff = true;
+                }
+            }
+
+            else if ((objPos == Position.Down) && this.y >= this.boundaries[2])
+            {
+                if (this.x == this.boundaries[1])
+                {
+                    this.objPos = Position.Left;
+                    
+                   // this.plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                else
+                {
+                    this.objPos = Position.Right;
+                    
+                    //this.plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                this.y = this.boundaries[2];
+                if (rw == 0)
+                {
+                    this.taxiing = false;
+                    this.takingOff = true;
+                }
+            }
+
+            else if ((this.objPos == Position.Up) && this.y <= this.boundaries[3])
+            {
+                if (this.x == this.boundaries[1])
+                {
+                    this.objPos = Position.Left;
+                    this.x = this.boundaries[1];
+                    //this.plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                }
+                else
+                {
+                    this.objPos = Position.Right;
+                    this.x = this.boundaries[0];
+                   // this.plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                }
+                this.y = this.boundaries[3];
+                if (rw == 18)
+                {
+                    this.taxiing = false;
+                    this.takingOff = true;
+                }
+            }
+
+        }
+
+
+        private void takeOff(int rw)
+        {
+            //if (this.x == 30 && this.y <= (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10))
+            //{
+            //    Console.WriteLine("lala");
+            //}
+            switch (rw)
+            {                    
+                case (90):
+                    if (this.x == 30 && this.y <= (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10) 
+                        && objPos == Position.Up)
+                    {
+                        this.y = (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Right;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    else if (this.x == 30 && this.y >= (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10)
+                        && objPos == Position.Down)
+                    {
+                        this.y = (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Right;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+                case (27):
+                    if (this.x == boundaries[1] && (this.y >= (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10))
+                        && objPos == Position.Down)
+                    {
+                        this.y = (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Left;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    else if (this.x == boundaries[1] && (this.y <= (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10))
+                        && objPos == Position.Up)
+                    {
+                        this.y = (AirField.getHalfformHeight() - (AirField.getHalfformHeight() / 5) + (AirField.getRunwayW() / 4) + 10);
+                        speed = takeoffSpeed;
+                        objPos = Position.Left;
+                        plane.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        takingOffOnRW = true;
+                    }
+                    break;
+
+                case (18):
+                    if ((this.x >= (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10) && this.y == 30
+                        && objPos == Position.Right)
+                    {
+                        this.x = (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Down;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    else if ((this.x <= (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10) && this.y == 30
+                        && objPos == Position.Left)
+                    {
+                        this.x = (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Down;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+
+                case (0):
+                    if ((this.x <= (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10) && this.y == boundaries[2]
+                        && objPos == Position.Left)
+                    {
+                        this.x = (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Up;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    else if ((this.x >= (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10) && this.y == boundaries[2]
+                        && objPos == Position.Right)
+                    {
+                        this.x = (AirField.getHalfformWidth() - (AirField.getHalfformWidth() / 5)) + (AirField.getRunwayW() / 4) + 10;
+                        speed = takeoffSpeed;
+                        objPos = Position.Up;
+                        plane.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        takingOffOnRW = true;
+
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public int getSize()
+        {
+            return this.size;
+        }
+    }
+
+
 }
