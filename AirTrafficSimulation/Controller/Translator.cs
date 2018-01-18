@@ -10,15 +10,15 @@ namespace AirTrafficSimulation.Controller
 {
     public class Translator
     {
-        private SequentialSpace runwaySpace;
+        //private SequentialSpace runwaySpace;
         private SequentialSpace taxiwaySpace;
         private singlePlane singlePlane;
         private string planeName;
 
 
-        public Translator(SequentialSpace runways, SequentialSpace taxiways, string planeName, int rw, int dir, int startx, int starty)
+        public Translator(SequentialSpace taxiways, string planeName, int rw, int dir, int startx, int starty)
         {
-            this.runwaySpace = runways;
+            //this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
             this.singlePlane = new singlePlane(planeName, 0, rw, dir, startx, starty, this);
             this.planeName = planeName;

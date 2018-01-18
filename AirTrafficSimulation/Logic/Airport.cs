@@ -140,7 +140,7 @@ namespace AirTrafficSimulation
 
         public void spawnplane(int dir, int counter)
         {
-            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir, 30,30 );
+            Airplane airplane = new Airplane(controlTowerSpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir, 30,30 );
             (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
             airplaneSpace.Put(airplane);
         }

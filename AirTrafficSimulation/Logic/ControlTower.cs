@@ -59,6 +59,16 @@ namespace AirTrafficSimulation
             return freeRunwaySpace;
         }
 
+        public ITuple getSpecificRunway(string planeCredentials, int runwayNr)
+        {
+            return runwaySpace.Get("Runway Nr.", runwayNr);
+        }
+
+        public ITuple getQueryRunway(string planeCredentials, int runwayNr)
+        {
+            return runwaySpace.Query("Runway Nr.", runwayNr);
+        }
+
 
         public ITuple isRunwayFreeForTakeoff(string planeCredentials, int runwayNr)
         {
