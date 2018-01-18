@@ -51,6 +51,10 @@ namespace AirTrafficSimulation
         singlePlane testplain;
         singlePlane testplain2 , testplain3, testplain4;
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
 
         private Airport ap;
 
