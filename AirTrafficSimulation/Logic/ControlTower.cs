@@ -82,7 +82,7 @@ namespace AirTrafficSimulation
             {
                 Console.WriteLine(planeCredentials + " Locking Runway Nr. " + space[1] +" / getting key");
                 runwaySpace.Get(space[0],space[1]);
-                Console.WriteLine("test");
+                
             }
         }
 

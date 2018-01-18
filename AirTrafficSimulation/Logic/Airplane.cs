@@ -227,7 +227,7 @@ namespace AirTrafficSimulation
             //updateGraphics(credentials, "" + frwT[0] + frwT[1], "" + freeTaxiWayTupleTo[0] + freeTaxiWayTupleTo[1]);
             Console.WriteLine(credentials + " is putting free taxiway "+taxiway+" back with lower barrier " + barrierLimitA);
             taxiwaySpace.Put((string)freeTaxiWayTupleTo[0], freeTaxiWayTupleTo[1], barrierLimitA, (barrierLimitA) > 0);
-            taxiwaySpace.Get(taxiwayGUILock);
+            //taxiwaySpace.Get(taxiwayGUILock);
         }
 
         private void taxiwayToTaxiway(string fromTw, string toTw)
@@ -245,7 +245,7 @@ namespace AirTrafficSimulation
 
             Console.WriteLine(credentials + " is decreasing " + freeTaxiWayTupleTo[0] + " " + freeTaxiWayTupleTo[1] + "'s taxiway barrierLimit to " + barrierLimitB);
             taxiwaySpace.Put("Taxiway", toTw, barrierLimitB, (barrierLimitB > 0));
-            taxiwaySpace.Get(taxiwayGUILock);
+            //taxiwaySpace.Get(taxiwayGUILock);
         }
 
         private void taxiwayToHangar(string fromTw)
@@ -270,7 +270,7 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " found free take-off taxiway " + taxiway + " with barrier value " + (barrierLimit + 1) + " and getting free taxiway tuple...");       
             Console.WriteLine(credentials + " is putting free taxiway " + taxiway + " back with new barrier " + barrierLimit);
             taxiwaySpace.Put((string)freeTaxiWayTuple[0], freeTaxiWayTuple[1], barrierLimit, barrierLimit > 0);
-            taxiwaySpace.Get(taxiwayGUILock);
+            //taxiwaySpace.Get(taxiwayGUILock);
         }
         private void taxiwayToRunway(string taxiway, ITuple frwL, ControlTower ct, string mode)
         {
@@ -290,7 +290,7 @@ namespace AirTrafficSimulation
             Console.WriteLine(credentials + " has safely left the taxiway!");
 
             //Leave the runway
-            taxiwaySpace.Get(taxiwayGUILock);
+            //taxiwaySpace.Get(taxiwayGUILock);
             Console.WriteLine(credentials + " got takeoff clearance with ID " + frwL[0] + frwL[1] + " and left the airport!");
             ct.putRunway(credentials, frwL);
             translator.allowGraphicalMovementOfPlaneToProgress();
