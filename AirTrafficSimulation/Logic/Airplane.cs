@@ -11,7 +11,7 @@ using dotSpace.Objects.Space;
 
 namespace AirTrafficSimulation
 {
-    class Airplane
+    public class Airplane
     {
         //private SpaceRepository airport;
         //private SequentialSpace airportSpace;
@@ -31,7 +31,9 @@ namespace AirTrafficSimulation
         private int windDirection;
         private bool realisticmode;
 
-        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, bool realisticMode, int windDirection, int dir, int startx, int starty) //SpaceRepository airportRepository)
+        private Airport airport;
+
+        public Airplane(SequentialSpace CTSpace, SequentialSpace rwSpace, SequentialSpace twSpace, string credentials, bool realisticMode, int windDirection, int dir, int startx, int starty, Airport airport) //SpaceRepository airportRepository)
         {
             //this.airport = airportRepository;
             this.controlTowerSpace = CTSpace;
@@ -40,8 +42,8 @@ namespace AirTrafficSimulation
             this.credentials = credentials;
             this.runwayGUILock = credentials + "Runway" + "-lock";
             this.taxiwayGUILock = credentials + "Taxiway" + "-lock";
-
-            this.translator = new Controller.Translator(rwSpace, twSpace, credentials, windDirection, dir, startx, starty);
+            this.airport = airport;
+            this.translator = new Controller.Translator(rwSpace, twSpace, credentials, windDirection, dir, startx, starty, this);
 
             this.windDirection = windDirection;
             this.realisticmode = realisticMode;
@@ -275,11 +277,11 @@ namespace AirTrafficSimulation
         private void taxiwayToRunway(string taxiway, ITuple frwL, ControlTower ct, string mode)
         {
             //Make space on the taxiway you just left
-            translator.allowGraphicalMovementOfPlaneToProgress();
             if (mode == "realistic")
             {
                 ct.getRunway(credentials, frwL);
             }
+            translator.allowGraphicalMovementOfPlaneToProgress();
             Console.WriteLine(credentials + " is searching for same take-off taxiway, to increase barrier...");
             ITuple usedtaxiway = taxiwaySpace.Get("Taxiway", taxiway, typeof(int), typeof(bool));
             int bl = (int)usedtaxiway[2] + 1;
@@ -292,8 +294,8 @@ namespace AirTrafficSimulation
             //Leave the runway
             taxiwaySpace.Get(taxiwayGUILock);
             Console.WriteLine(credentials + " got takeoff clearance with ID " + frwL[0] + frwL[1] + " and left the airport!");
-            ct.putRunway(credentials, frwL);
             translator.allowGraphicalMovementOfPlaneToProgress();
+            ct.putRunway(credentials, frwL);
             //Airspace step
 
         }
@@ -394,6 +396,16 @@ namespace AirTrafficSimulation
                     }
                 }
             }
+        }
+
+        public bool getrw(int rw)
+        {
+            return airport.getrw(rw);
+        }
+
+        public void setrw(int rw, bool occupied)
+        {
+            airport.setrw(rw, occupied);
         }
 
         //private void updateGraphics(string planeCredentials, string currentLocationIdentifier, string nextLocationIdentifier)

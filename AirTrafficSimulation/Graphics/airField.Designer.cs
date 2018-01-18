@@ -49,7 +49,7 @@
             this.Text = "Airfield Sim";
             this.Load += new System.EventHandler(this.airField_Load_1);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.airField_Paint);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.airField_KeyDown);
+            
             this.ResumeLayout(false);
 
         }

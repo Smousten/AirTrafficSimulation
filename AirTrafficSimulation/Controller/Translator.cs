@@ -14,14 +14,15 @@ namespace AirTrafficSimulation.Controller
         private SequentialSpace taxiwaySpace;
         private singlePlane singlePlane;
         private string planeName;
+        private Airplane airplane;
 
-
-        public Translator(SequentialSpace runways, SequentialSpace taxiways, string planeName, int rw, int dir, int startx, int starty)
+        public Translator(SequentialSpace runways, SequentialSpace taxiways, string planeName, int rw, int dir, int startx, int starty, Airplane airplane)
         {
             this.runwaySpace = runways;
             this.taxiwaySpace = taxiways;
             this.singlePlane = new singlePlane(planeName, 0, rw, dir, startx, starty, this);
             this.planeName = planeName;
+            this.airplane = airplane;
         }
 
         public singlePlane getSingleplain()
@@ -32,7 +33,8 @@ namespace AirTrafficSimulation.Controller
         //Fire-and-forget method, to update the GUI
         public void allowGraphicalMovementOfPlaneToProgress()
         {
-            singlePlane.setHasLock(true);//singlePlane.setCanMove(true); // Maybe setCanMove
+            //singlePlane.setHasLock(true);
+            //singlePlane.setCanMove(true); // Maybe setCanMove
             //dotSpace.Objects.Space.Tuple releventDataTuple = new dotSpace.Objects.Space.Tuple(credentials, previousLocation, nextLocation);
             //Tell graphics the input information, so we can draw it
         }
@@ -49,17 +51,28 @@ namespace AirTrafficSimulation.Controller
             //    taxiwaySpace.Put(planeNextLocationLock);
             //}
 
-            if (!singlePlane.getCanmove())
-            {
-                taxiwaySpace.Put(planeName + "Taxiway"/*singleplain.getRWreq()*/ + "-lock");
-            }
+            //if (!singlePlane.getCanmove())
+            //{
+            taxiwaySpace.Put(planeName + "Taxiway"/*singleplain.getRWreq()*/ + "-lock");
+            //singlePlane.setHasLock(false);
+            //}
         }
 
-        public bool getCanmove()
+        public bool getrw(int rw)
         {
-            return singlePlane.getCanmove();
+            return airplane.getrw(rw);
         }
-        
+
+        public void setrw(int rw, bool occupied)
+        {
+            airplane.setrw(rw, occupied);
+        }
+
+        //public void SetHasLock(bool lo)
+        //{
+        //     singlePlane.setHasLock(lo);
+        //}
+
         //public void set
 
     }

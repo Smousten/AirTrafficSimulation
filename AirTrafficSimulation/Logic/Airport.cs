@@ -140,7 +140,7 @@ namespace AirTrafficSimulation
 
         public void spawnplane(int dir, int counter)
         {
-            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir, 30,30 );
+            Airplane airplane = new Airplane(controlTowerSpace, runWaySpace, taxiWaySpace, "Plane" + counter, realisticMode, windDirection, dir, 30,30, this );
             (new System.Threading.Thread(new System.Threading.ThreadStart(() => airplane.takeoff()))).Start();
             airplaneSpace.Put(airplane);
         }
@@ -152,7 +152,10 @@ namespace AirTrafficSimulation
 
             while (counter <= noOfPlanes)
             {
+                if (counter == 3) windDirection = 18;
                 if (counter == 2) windDirection = 0;
+                if (counter == 4) windDirection = 27;
+
                 if (windDirection == 0 || windDirection == 90)
                 {
                     dir = 2;
@@ -169,6 +172,19 @@ namespace AirTrafficSimulation
                 
                 counter++;
             }
+        }
+        private bool rw0 = false;
+        private bool rw90 = false;
+        public bool getrw(int rw)
+        {
+            if (rw == 0 || rw == 18) return rw0;
+            return rw90;
+        }
+
+        public void setrw(int rw, bool occupied)
+        {
+            if (rw == 0 || rw == 18)  this.rw0 = occupied;
+             else this.rw90 = occupied;
         }
 
         //public void spawnAirplanes(int dir)
